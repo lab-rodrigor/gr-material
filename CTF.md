@@ -182,22 +182,32 @@ O efeito não é impedir a invasão (a missão 3 já fez isso), e sim **encarece
 
 **Por que importa — e o que isto NÃO é.** Mudar a porta **não é segurança de verdade**: quem te ataca de propósito roda um scan e acha em segundos. É *segurança por obscuridade*, e vale conhecer o termo para saber que não se constrói defesa em cima disso.
 
-O ganho é outro, e é real: **99% do que bate na porta 22 é varredura automática**. Tirando o SSH de lá, o seu log de autenticação passa de milhares de linhas de ruído para quase nada. E aí, quando aparecer uma tentativa, ela **significa alguma coisa** — provavelmente alguém mirando você especificamente.
+O ganho é outro, e é real: **99% do que bate na porta 22 é varredura automática**. Tirando o SSH de lá, o seu log de autenticação passa de milhares de linhas de ruído para quase nada. E aí, quando aparecer uma tentativa, ela **significa alguma coisa**.
 
-Menos ruído é mais chance de enxergar o sinal. Esse é o argumento honesto.
+**ATENÇÃO — porta de dentro e porta de fora são diferentes.** O seu laboratório roda num container, e o servidor traduz portas na entrada:
 
-**Faça.** Ponha o sshd na **2222** — ela também está publicada para você, então o acesso continua funcionando de fora.
+```
+de fora            dentro do laboratório
+SUA_PORTA     ->   22
+SUA_PORTA+100 ->   2222
+```
+
+Se a sua porta de acesso é a 22018, então **2222 lá dentro aparece como 22118 aqui fora**. Conectar em `gr.lab.ayty.org:2222` dá timeout, porque não há nada escutando nessa porta no host — e o `tcpdump` no laboratório não vê pacote nenhum, que é o sintoma exato.
+
+É a mesma confusão da missão 5: o firewall de dentro enxerga a porta de dentro.
+
+**Faça.** Ponha o sshd na **2222** e libere a **2222** no firewall.
 
 **A ordem é tudo aqui:**
 
-1. libere a porta nova no firewall **antes**
+1. libere a 2222 no firewall **antes**
 2. mude o `Port` no sshd_config e recarregue
-3. teste a porta nova **numa segunda janela**
+3. teste **numa segunda janela**, em `SUA_PORTA+100`
 4. só então feche a antiga
 
 Inverter os passos 1 e 2 é a receita clássica para perder o acesso.
 
-> **Como eu verifico:** Use a 2222 — ela também está publicada. Teste a nova ANTES de fechar a antiga.
+> **Como eu verifico:** Use a 2222 lá dentro. De fora ela aparece na SUA porta + 100 — 22018 vira 22118. Teste ANTES de fechar a antiga.
 
 ### 9. Ligar as atualizações automáticas
 
