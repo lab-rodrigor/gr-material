@@ -16,6 +16,8 @@
 
 Um seminário por semana, sempre na terça.
 
-Não há aula entre **19/10 e 01/11**. Por isso o intervalo entre o seminário 7 e o 8.
+Não haverá aula entre **19/10 e 01/11**. Por isso o intervalo entre o seminário 7 e o 8.
+
+As atividades e os prazos seguem normalmente nesse período.
 
 Para escolher um tema, fale com o Prof. Rodrigo no Discord.
