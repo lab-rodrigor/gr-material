@@ -9,6 +9,7 @@ organização para ler.
 |---|---|
 | **[🚩 CTF — Preparando um servidor do zero](./CTF.md)** | a atividade do laboratório: 12 missões para deixar um servidor pronto para uso |
 | **[🐳 Docker no servidor da disciplina](./DOCKER.md)** | operar containers no servidor real: o que você vê, o que pode mexer e por quê |
+| **[📗 Roteiro de comandos Docker](./materialDocker-Elksandro.md)** | material do seminário de José Elksandro: imagens, containers, redes, volumes, Dockerfile e Compose |
 | **[🐧 Linux pelo terminal](./LINUX.md)** | consulta rápida para usar **durante** o CTF: comandos por tarefa, erros comuns e o que significam |
 
 O acesso ao laboratório de cada aluno, as páginas pessoais e o acompanhamento
