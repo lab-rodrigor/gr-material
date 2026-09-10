@@ -1,10 +1,10 @@
-# Seminários de Gerência de Redes 2026.2
+# Seminários — Gerência de Redes 2026.2
 
 | # | Tema | Quem apresenta | Data |
 |---|---|---|---|
 | 1 | Linux básico | Djafer Miguel Fernandes Pereira | 08/09/2026 |
 | 2 | Docker básico | José Elksandro do Nascimento Silva | 10/09/2026 |
-| 3 | Pipeline e GitHub Actions | João Gabriel de Souza Penedo | |
+| 3 | Pipeline e GitHub Actions | Gabriel Mizael de Sousa Gomes | |
 | 4 | Análise de tráfego com tcpdump e Wireshark | | |
 | 5 | Logs centralizados: syslog, journald, retenção | | |
 | 6 | SNMP: agente, MIB, OID, v2c e v3 | | |
