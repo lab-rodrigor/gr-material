@@ -1,9 +1,9 @@
 # Docker no servidor da disciplina
 
-**Gerência de Redes 2026.2 · DCX/UFPB**
+Gerência de Redes 2026.2, DCX/UFPB
 
-Até agora você administrou **um** servidor: o seu laboratório. Nesta aula você
-sobe um nível e passa a operar containers **no servidor de verdade** — o mesmo
+Até agora você administrou um servidor: o seu laboratório. Nesta aula você
+sobe um nível e passa a operar containers no servidor de verdade, o mesmo
 que hospeda os portais, o banco de dados, o bot e os laboratórios de toda a
 turma.
 
@@ -20,15 +20,16 @@ docker run -v /:/host -it debian chroot /host    # e pronto: root no servidor
 ```
 
 O container monta o disco inteiro do host e troca a raiz para dentro dele. Por
-isso, **pertencer ao grupo `docker` equivale a ter root** — e é por isso que
+isso, pertencer ao grupo `docker` equivale a ter root, e é por isso que
 nenhum aluno está nesse grupo.
 
 O que vocês têm é um comando, o `gr-docker`, que roda com privilégio mas decide
 o que pode. É o padrão que se usa em servidor compartilhado de verdade: em vez
 de dar a chave da casa, dar uma porta com regra.
 
-> Guarde esta ideia: **acesso não é "sim ou não", é "o quê"**. Boa parte do
-> trabalho de administrar sistemas é desenhar essa fronteira.
+Acesso se define pelo que a pessoa pode fazer, e não por uma permissão única que
+liga ou desliga tudo. Boa parte do trabalho de administrar sistemas é desenhar
+essa fronteira.
 
 ---
 
@@ -47,7 +48,7 @@ Repare no que mudou em relação ao laboratório:
 | você é | dono da máquina | um usuário entre muitos |
 | `sudo` | tudo | só o `gr-docker` |
 
-A chave é a **mesma**. O que muda é quem você é do outro lado.
+A chave é a mesma. O que muda é quem você é do outro lado.
 
 ---
 
@@ -62,11 +63,11 @@ gr-docker stats       # consumo de CPU e memória
 
 Comece por aqui, e leia com atenção. Você vai ver:
 
-- `portal-gr` e `portal-pa` — os portais das duas disciplinas
-- `postgres` — o banco onde ficam os dados de vocês
-- `gr-lab-*` — os 32 laboratórios do CTF, inclusive o seu
-- `pa-*` — as aplicações publicadas pelos alunos de Projeto
-- `caddy`, `umami`, `uptime-kuma` — infraestrutura de apoio
+- `portal-gr` e `portal-pa`, os portais das duas disciplinas
+- `postgres`, o banco onde ficam os dados de vocês
+- `gr-lab-*`, os 32 laboratórios do CTF, inclusive o seu
+- `pa-*`, as aplicações publicadas pelos alunos de Projeto
+- `caddy`, `umami` e `uptime-kuma`, infraestrutura de apoio
 
 **Perguntas para responder olhando a saída:**
 
@@ -77,7 +78,7 @@ Comece por aqui, e leia com atenção. Você vai ver:
 4. Algum container está consumindo muito mais memória que os outros?
 
 A terceira é a mais importante: **`127.0.0.1` significa que a porta só é
-alcançável de dentro do servidor.** É assim que o portal fica protegido — quem
+alcançável de dentro do servidor.** É assim que o portal fica protegido, porque quem
 chega de fora passa pelo Caddy, nunca direto.
 
 ---
@@ -88,7 +89,7 @@ chega de fora passa pelo Caddy, nunca direto.
 gr-docker run nginx:alpine --name meu-site -p 23000:80
 ```
 
-Troque `23000` pela **primeira porta da sua faixa** — cada aluno tem dez, e a
+Troque `23000` pela primeira porta da sua faixa. Cada aluno tem dez, e a
 sua está no e-mail de acesso.
 
 O que aconteceu:
@@ -109,7 +110,7 @@ E abra no navegador: `http://gr.lab.ayty.org:23000`
 
 > **De novo a porta de dentro e a de fora.** O nginx escuta na **80**, dentro do
 > container. Você chega nele pela **23000**, de fora. O `-p 23000:80` é a
-> tradução — e é o mesmo conceito que travou dois colegas no CTF.
+> tradução, e é o mesmo conceito que travou dois colegas no CTF.
 
 ---
 
@@ -128,7 +129,7 @@ gr-docker rm meu-site         # aí sim, some
 **Experimente e observe:** pare o container, edite nada, inicie de novo. O que
 sobreviveu? Agora apague e recrie. O que se perdeu?
 
-Essa diferença — **parar preserva, apagar não** — é a base para entender
+Parar preserva o container e apagar o descarta, e essa diferença é a base para entender
 volumes, que é o próximo assunto.
 
 ---
@@ -139,7 +140,7 @@ volumes, que é o próximo assunto.
 gr-docker exec meu-site
 ```
 
-Você cai num shell **dentro** do nginx. Explore:
+Você cai num shell dentro do nginx. Explore:
 
 ```bash
 ls /                      # é um sistema de arquivos inteiro
@@ -149,7 +150,7 @@ ls /usr/share/nginx/html  # a página servida
 exit
 ```
 
-**Repare:** dentro do container há pouquíssimos processos — talvez dois. Um
+**Repare:** dentro do container há pouquíssimos processos, talvez dois. Um
 container não é uma máquina virtual: **não há init, não há systemd, não há
 serviços de sistema**. É um processo isolado, com um sistema de arquivos
 próprio, compartilhando o kernel do host.
@@ -167,7 +168,7 @@ gr-docker logs meu-site --tail 20
 ```
 
 Acesse a página pelo navegador e rode de novo: as requisições aparecem. Aplicação
-em container escreve log na **saída padrão**, e o Docker guarda — em vez de cada
+em container escreve log na saída padrão, e o Docker guarda, em vez de cada
 uma escrever num arquivo diferente.
 
 ---
@@ -191,7 +192,7 @@ Cada recusa tem um motivo, e vale ler a mensagem em vez de só tentar outra cois
 | `--network host` | a rede do servidor, sem isolamento |
 | `--pid host` | ver e matar processos de todos |
 
-**Dentro do seu laboratório do CTF você manda no que quiser** — lá o estrago
+Dentro do seu laboratório do CTF você manda no que quiser, porque lá o estrago
 máximo é o próprio laboratório. Aqui, não.
 
 Limites por aluno: **5 containers**, 512 MB e meio núcleo cada.
@@ -221,13 +222,13 @@ e explique, com suas palavras, por que essa porta não pode ser sua.
 ## Para levar da aula
 
 **Container não é máquina virtual.** Compartilha o kernel, sobe em
-milissegundos, e não roda um sistema inteiro — roda um processo.
+milissegundos, e roda um processo em vez de um sistema inteiro.
 
 **Imagem e container são coisas diferentes.** A imagem é o molde; o container é
 a instância. Apagar o container não apaga a imagem, e é por isso que recriar é
 rápido.
 
-**A porta de dentro e a de fora nunca são a mesma coisa** — a não ser por
+**A porta de dentro e a de fora nunca são a mesma coisa**, a não ser por
 coincidência.
 
 **Quem pode criar container pode virar root.** Toda a arquitetura do
