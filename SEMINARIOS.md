@@ -2,8 +2,8 @@
 
 | # | Tema | Quem apresenta | Data |
 |---|---|---|---|
-| 1 | Linux básico | Djafer Miguel Fernandes Pereira | 2026-09-08 |
-| 2 | Docker básico | José Elksandro do Nascimento Silva | 2026-09-10 |
+| 1 | Linux básico | Djafer Miguel Fernandes Pereira | 08/09/2026 |
+| 2 | Docker básico | José Elksandro do Nascimento Silva | 10/09/2026 |
 | 3 | Pipeline e GitHub Actions | João Gabriel de Souza Penedo | |
 | 4 | Análise de tráfego com tcpdump e Wireshark | | |
 | 5 | Logs centralizados: syslog, journald, retenção | | |
