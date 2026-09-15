@@ -7,6 +7,7 @@ organização para ler.
 
 | | |
 |---|---|
+| **[🐳 Atividade 2 — Três camadas com Docker](./ATIVIDADE-2-DOCKER.md)** | banco, API e front em containers, com rede interna e volume. Prazo: 18/09 às 20h |
 | **[🚩 CTF — Preparando um servidor do zero](./CTF.md)** | a atividade do laboratório: 12 missões para deixar um servidor pronto para uso |
 | **[🐳 Docker no servidor da disciplina](./DOCKER.md)** | operar containers no servidor real: o que você vê, o que pode mexer e por quê |
 | **[📗 Roteiro de comandos Docker](./materialDocker-Elksandro.md)** | material do seminário de José Elksandro: imagens, containers, redes, volumes, Dockerfile e Compose |
