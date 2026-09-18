@@ -1,6 +1,6 @@
 # Atividade 2 — Três camadas com Docker
 
-- Prazo: sexta-feira, 18/09/2026, às 20h
+- Prazo: sábado, 19/09/2026, às 20h
 - Unidade: 1
 - Nota: proporcional aos itens cumpridos. 8 itens valem 10.
 - Onde: no servidor da disciplina, com `gr-docker`
