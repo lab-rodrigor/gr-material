@@ -7,6 +7,7 @@ organização para ler.
 
 | | |
 |---|---|
+| **[⚙️ Atividade 3 — Pipeline](./ATIVIDADE-3-PIPELINE.md)** | o GitHub Actions sobe a topologia da atividade 2 a cada push. Prazo: 26/09 às 20h |
 | **[🐳 Atividade 2 — Três camadas com Docker](./ATIVIDADE-2-DOCKER.md)** | banco, API e front em containers, com rede interna e volume. Prazo: 19/09 às 20h |
 | **[🚩 CTF — Preparando um servidor do zero](./CTF.md)** | a atividade do laboratório: 12 missões para deixar um servidor pronto para uso |
 | **[🐳 Docker no servidor da disciplina](./DOCKER.md)** | operar containers no servidor real: o que você vê, o que pode mexer e por quê |
