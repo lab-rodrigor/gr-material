@@ -11,7 +11,7 @@
 | 7 | Monitoramento com Zabbix | | 13/10/2026 |
 | 8 | Prometheus e Grafana | | 03/11/2026 |
 | 9 | Proxy reverso e TLS: certificados e renovação | | 10/11/2026 |
-| 10 | Backup e restauração: volume, dump e restore | | 17/11/2026 |
+| 10 | Backup e restauração: volume, dump e restore | Anna Gabriela de Moura Souza | 17/11/2026 |
 | 11 | Ansible: inventário, idempotência | | 24/11/2026 |
 
 Um seminário por semana, sempre na terça.
