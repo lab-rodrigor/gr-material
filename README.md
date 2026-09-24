@@ -13,6 +13,7 @@ organização para ler.
 | **[🐳 Docker no servidor da disciplina](./DOCKER.md)** | operar containers no servidor real: o que você vê, o que pode mexer e por quê |
 | **[📗 Roteiro de comandos Docker](./materialDocker-Elksandro.md)** | material do seminário de José Elksandro: imagens, containers, redes, volumes, Dockerfile e Compose |
 | **[🐧 Linux pelo terminal](./LINUX.md)** | consulta rápida para usar **durante** o CTF: comandos por tarefa, erros comuns e o que significam |
+| **[🔍 Análise de tráfego](./TRAFEGO.md)** | tcpdump e Wireshark: o que saiu da máquina e o que chegou. Material do seminário 4 |
 | **[🎤 Seminários](./SEMINARIOS.md)** | os temas do semestre e quem apresenta cada um |
 
 O acesso ao laboratório de cada aluno, as páginas pessoais e o acompanhamento
