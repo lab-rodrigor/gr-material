@@ -5,7 +5,7 @@
 | 1 | Linux básico | Djafer Miguel Fernandes Pereira | 08/09/2026 |
 | 2 | Docker básico | José Elksandro do Nascimento Silva | 10/09/2026 |
 | 3 | Pipeline e GitHub Actions | Gabriel Mizael de Sousa Gomes | 15/09/2026 |
-| 4 | Análise de tráfego com tcpdump e Wireshark | Matheus Eduardo de Lima Eleotério | 22/09/2026 |
+| 4 | Análise de tráfego com tcpdump e Wireshark | Matheus Eduardo de Lima Eleotério | 24/09/2026 |
 | 5 | Logs centralizados: syslog, journald, retenção | | 29/09/2026 |
 | 6 | SNMP: agente, MIB, OID, v2c e v3 | | 06/10/2026 |
 | 7 | Monitoramento com Zabbix | | 13/10/2026 |
