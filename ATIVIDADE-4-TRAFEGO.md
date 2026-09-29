@@ -1,4 +1,4 @@
-# Atividade 4 — Captura de tráfego
+# Atividade 4: captura de tráfego
 
 - Prazo: sexta-feira, 02/10/2026, às 20h
 - Unidade: 1
@@ -32,7 +32,7 @@ ssh -i sua-chave -p 220NN aluno@gr.lab.ayty.org
 
 O `tcpdump` já está instalado, e a conta `aluno` tem `sudo`. O material de apoio está em [TRAFEGO.md](TRAFEGO.md).
 
-Capture apenas no seu laboratório. Os laboratórios da turma se enxergam em `172.30.0.0/16`, e ler o tráfego do colega não faz parte desta atividade.
+Capture apenas no seu laboratório. Os laboratórios da turma se enxergam em `172.30.0.0/16`, e ler o tráfego do colega fica fora desta atividade.
 
 ## Ritmo das emissões
 
@@ -54,7 +54,7 @@ sudo tcpdump -i any -n -A port 80
 
 Espere a próxima emissão. Ela acontece de poucos em poucos minutos.
 
-**Repare** que qualquer pessoa no caminho lê esse cabeçalho. É o mesmo que acontece com token e cookie numa aplicação sem TLS.
+Qualquer pessoa no caminho lê esse cabeçalho. O mesmo vale para token e cookie numa aplicação sem TLS.
 
 ### 2. A porta de destino
 
@@ -70,7 +70,7 @@ sudo tcpdump -i any -nn not port 22
 
 O destino recusa a conexão, então você vê o `[S]` seguido de `[R]`. A porta está na linha, depois do endereço.
 
-**Use `-nn`**, com dois enes. Com um só, o tcpdump troca o número por nome de serviço quando ele existe em `/etc/services`.
+Use `-nn`, com dois enes. Com um só, o tcpdump troca o número por nome de serviço quando ele existe em `/etc/services`.
 
 ### 3. O nome perguntado no DNS
 
@@ -84,7 +84,7 @@ sudo tcpdump -i any -n -A port 53
 
 O nome perguntado aparece no pacote. Com `-A` você lê o texto; a alternativa é `-v`, que faz o tcpdump decodificar o protocolo e mostrar a pergunta.
 
-**Repare** que a consulta de DNS é visível mesmo quando a conexão seguinte é cifrada. Quem observa a rede sabe para onde você vai antes de você chegar.
+A consulta de DNS fica visível mesmo quando a conexão seguinte é cifrada. Quem observa a rede vê o nome que você procurou.
 
 ### 4. A flag dentro do ping
 
@@ -98,7 +98,7 @@ sudo tcpdump -i any -n -A icmp
 
 O payload aparece em texto no fim da saída. Com `-X` você vê o hexadecimal ao lado do texto.
 
-**Pense** no que isso significa para um firewall que libera ICMP sem olhar o conteúdo: o ping serve para carregar dado.
+Um firewall que libera ICMP sem olhar o conteúdo deixa passar qualquer dado dentro do ping.
 
 ### 5. A flag partida em dois pacotes
 
@@ -108,7 +108,7 @@ O payload aparece em texto no fim da saída. Com `-X` você vê o hexadecimal ao
 
 **Faça.** Junte os dois. O `-A` já mostra os dois pedaços em sequência na mesma conexão; basta ler na ordem. No Wireshark, **Follow TCP Stream** faz a remontagem.
 
-**Isto é o que TCP faz por você.** A aplicação recebe um fluxo contínuo, e a divisão em pacotes fica escondida. Na captura, ela aparece.
+TCP entrega à aplicação um fluxo contínuo e esconde dela a divisão em pacotes. Na captura essa divisão aparece.
 
 ### 6. O nome do servidor no TLS
 
@@ -122,7 +122,7 @@ sudo tcpdump -i any -n -A port 443
 
 O nome está no SNI, que viaja em claro dentro do ClientHello, antes de a cifra começar.
 
-**O limite da cifra.** O conteúdo da conexão você não lê. O destino, o tamanho e o tempo de cada pacote, sim.
+A cifra esconde o conteúdo da conexão. O destino, o tamanho e o tempo de cada pacote continuam visíveis.
 
 ### 7. A flag que sai uma vez por dia
 
@@ -142,11 +142,11 @@ Depois leia o arquivo quando quiser:
 sudo tcpdump -r ~/capturas/dia.pcap -A | grep X-Flag-Unica
 ```
 
-**Cuidado com o tamanho.** Captura sem filtro num servidor com tráfego enche o disco. Filtre na captura, e não só na leitura.
+Captura sem filtro num servidor com tráfego enche o disco. Filtre na captura, e não só na leitura.
 
 ### 8. A captura do aperto de mão
 
-**O que é.** A entrega desta missão é um arquivo, não uma flag. Grave em `~/capturas/handshake.pcap` uma captura que contenha um aperto de mão TCP completo, originado do seu laboratório.
+**O que é.** Esta missão entrega um arquivo. Grave em `~/capturas/handshake.pcap` uma captura que contenha um aperto de mão TCP completo, originado do seu laboratório.
 
 **Faça.** Em duas sessões. Numa:
 
@@ -162,7 +162,7 @@ curl -s http://172.30.0.1/ > /dev/null
 
 Encerre a captura com Ctrl-C.
 
-**O que o corretor confere:** os três pacotes do aperto de mão, `[S]`, `[S.]` e `[.]`, com o IP do seu laboratório de um dos lados.
+O corretor confere os três pacotes do aperto de mão, `[S]`, `[S.]` e `[.]`, com o IP do seu laboratório de um dos lados.
 
 ## Quando algo não funciona
 
