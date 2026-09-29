@@ -1,7 +1,7 @@
 # Atividade 5: plantão
 
 - Prazo: segunda-feira, 05/10/2026, até a meia-noite
-- Unidade: 3
+- Unidade: 1 (última atividade da unidade)
 - Onde: no seu laboratório e no repositório da atividade 3
 - Acompanhamento: `/atividades atividade:5` no Discord
 
