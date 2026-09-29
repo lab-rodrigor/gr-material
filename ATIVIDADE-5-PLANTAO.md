@@ -28,7 +28,7 @@ Todas se desfazem quando o pipeline sobe a topologia de novo. Os dados do banco 
 - `~/sonda.log`, no laboratório: uma linha por minuto, com os dois códigos HTTP do seu front
 - `~/capturas/falha.pcap`, no laboratório: o tráfego da sonda na porta do front durante a falha
 - `~/laudo.md`, no laboratório: quatro campos, `camada`, `hora`, `sintoma` e `acao`
-- um commit na `main` do seu repositório da atividade 3, que sobe a topologia de novo
+- o conserto num lugar que outra pessoa roda de novo: um commit na `main` do seu repositório da atividade 3, ou um `~/consertar.sh` executável
 
 Formato de cada linha do `sonda.log`: instante ISO com fuso, código de `/`, código de `/api/pokemons`, separados por espaço. Use `000` quando não houver resposta.
 
@@ -54,21 +54,21 @@ O campo `camada` é `banco`, `api` ou `front`. O campo `hora` é o instante ISO 
 2. A falha aparece na sonda: uma linha `200 200` na meia hora anterior à falha e uma linha com erro nos 20 minutos seguintes.
 3. A captura do momento da falha: no mínimo 5 pacotes na sua porta em `~/capturas/falha.pcap`, com pelo menos um entre 10 minutos antes e 2 horas depois da falha.
 4. O laudo com a camada certa e a hora dentro de 10 minutos da falha, com `sintoma` e `acao` preenchidos.
-5. O conserto veio do pipeline: o front no ar foi criado depois da falha e roda com `DEPLOY_SHA` igual ao último commit da `main`.
+5. O conserto é reproduzível: o front no ar foi criado depois da falha, e o conserto saiu de um push na `main` (com `DEPLOY_SHA` igual ao último commit) ou de um `~/consertar.sh` executável com os três `gr-docker run`.
 6. A topologia íntegra no fim: os 8 itens da atividade 2 passam de novo.
 
 Nota: proporcional aos itens cumpridos. 6 itens valem 10.
 
-Um `gr-docker start` na mão resolve o serviço e não conta no item 5. O item 6 olha só o estado final, então ele conta de qualquer jeito.
+Um `gr-docker start` na mão resolve o serviço e não conta no item 5, porque não remonta a topologia. O item 6 olha só o estado final, então ele conta de qualquer jeito.
 
 ## Antes da janela abrir
 
-- a topologia de pé, com os 8 itens da atividade 2 passando
-- o pipeline verde, com os 6 itens da atividade 3 passando
+- a topologia de pé, respondendo na sua porta
 - a sonda rodando de um jeito que sobrevive à queda da sua sessão SSH
 - o `tcpdump` gravando em arquivo, filtrado pela sua porta
+- o conserto pronto: o workflow da atividade 3, ou o `~/consertar.sh`
 
-Quem não tem o pipeline verde ainda dá conta de 5 dos 6 itens. O item 5 exige o pipeline.
+Esta atividade não exige as anteriores concluídas. Se você não tem a topologia de pé, peça no canal `#atv-5-plantao`: o servidor monta uma para você, com as mesmas imagens e na sua faixa de portas, e os dados de acesso ficam em `~/atv5-ambiente.txt`. Quem não tem o pipeline verde entrega o conserto pelo `~/consertar.sh`.
 
 ## Como a camada aparece na sonda
 
