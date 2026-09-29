@@ -1,0 +1,89 @@
+# Atividade 5: plantão
+
+- Prazo: segunda-feira, 05/10/2026, até a meia-noite
+- Unidade: 3
+- Onde: no seu laboratório e no repositório da atividade 3
+- Acompanhamento: `/atividades atividade:5` no Discord
+
+O servidor vai derrubar uma camada da sua topologia num minuto sorteado, sem avisar. Você precisa perceber, dizer qual camada caiu e a que hora, e consertar por um push na `main`.
+
+A janela: a falha entra entre sexta-feira 02/10 às 20h e domingo 04/10 às 20h. O minuto é sorteado por aluno.
+
+Se a sua topologia não estiver de pé na hora sorteada, o servidor adia a falha em uma hora e tenta de novo.
+
+## O que o servidor pode fazer
+
+Uma destas cinco, sorteada por aluno:
+
+- para o container do banco
+- congela o container do banco (`docker pause`)
+- desconecta o banco da rede interna
+- para o container da API
+- para o container do front
+
+Todas se desfazem quando o pipeline sobe a topologia de novo. Os dados do banco continuam no volume.
+
+## O que entregar
+
+- `~/sonda.log`, no laboratório: uma linha por minuto, com os dois códigos HTTP do seu front
+- `~/capturas/falha.pcap`, no laboratório: o tráfego da sonda na porta do front durante a falha
+- `~/laudo.md`, no laboratório: quatro campos, `camada`, `hora`, `sintoma` e `acao`
+- um commit na `main` do seu repositório da atividade 3, que sobe a topologia de novo
+
+Formato de cada linha do `sonda.log`: instante ISO com fuso, código de `/`, código de `/api/pokemons`, separados por espaço. Use `000` quando não houver resposta.
+
+```
+2026-10-02T23:03:11+00:00 200 200
+2026-10-02T23:04:12+00:00 200 500
+```
+
+Formato do `laudo.md`:
+
+```
+camada=banco
+hora=2026-10-03T14:48:00+00:00
+sintoma=/api/pokemons passou a responder 500 e a raiz continuou 200
+acao=refiz o deploy pelo pipeline, commit abc1234
+```
+
+O campo `camada` é `banco`, `api` ou `front`. O campo `hora` é o instante ISO com fuso, como a sua sonda grava.
+
+## Os 6 itens
+
+1. A sonda gravando em `~/sonda.log`: no mínimo 60 linhas válidas, cobrindo 2 horas, com intervalo típico de até 3 minutos.
+2. A falha aparece na sonda: uma linha `200 200` na meia hora anterior à falha e uma linha com erro nos 20 minutos seguintes.
+3. A captura do momento da falha: no mínimo 5 pacotes na sua porta em `~/capturas/falha.pcap`, com pelo menos um entre 10 minutos antes e 2 horas depois da falha.
+4. O laudo com a camada certa e a hora dentro de 10 minutos da falha, com `sintoma` e `acao` preenchidos.
+5. O conserto veio do pipeline: o front no ar foi criado depois da falha e roda com `DEPLOY_SHA` igual ao último commit da `main`.
+6. A topologia íntegra no fim: os 8 itens da atividade 2 passam de novo.
+
+Nota: proporcional aos itens cumpridos. 6 itens valem 10.
+
+Um `gr-docker start` na mão resolve o serviço e não conta no item 5. O item 6 olha só o estado final, então ele conta de qualquer jeito.
+
+## Antes da janela abrir
+
+- a topologia de pé, com os 8 itens da atividade 2 passando
+- o pipeline verde, com os 6 itens da atividade 3 passando
+- a sonda rodando de um jeito que sobrevive à queda da sua sessão SSH
+- o `tcpdump` gravando em arquivo, filtrado pela sua porta
+
+Quem não tem o pipeline verde ainda dá conta de 5 dos 6 itens. O item 5 exige o pipeline.
+
+## Como a camada aparece na sonda
+
+```
+/ 200   /api 500   → a camada do banco
+/ 200   /api 000   → a camada da API
+/ 000   /api 000   → a camada do front
+```
+
+Qual das falhas foi, dentro da camada, sai do log da API e de `gr-docker meus`. Olhe antes de consertar: o conserto apaga o sintoma.
+
+## Quando algo não funciona
+
+- A sonda mostra `000` nos dois códigos desde o começo: você está sondando `127.0.0.1`. Dentro do laboratório, o front está em `gr.lab.ayty.org:SUAPORTA`.
+- A sonda morreu quando você fechou o terminal: use `nohup`, `cron` ou um serviço do systemd.
+- O `/atividades` diz que a falha ainda não aconteceu: o seu minuto ainda não chegou, ou a sua topologia estava fora do ar e o servidor adiou.
+- O botão "Explicar o item" no Discord tem o passo a passo de cada item, com os comandos.
+- Outras dúvidas: `/ajuda problema texto: ...` no Discord.
