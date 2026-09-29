@@ -25,12 +25,12 @@ Todas se desfazem quando o pipeline sobe a topologia de novo. Os dados do banco 
 
 ## O que entregar
 
-- `~/sonda.log`, no laboratório: uma linha por minuto, com os dois códigos HTTP do seu front
-- `~/capturas/falha.pcap`, no laboratório: o tráfego da sonda na porta do front durante a falha
+- `~/monitor.log`, no laboratório: uma linha por minuto, com os dois códigos HTTP do seu front
+- `~/capturas/falha.pcap`, no laboratório: o tráfego do monitor na porta do front durante a falha
 - `~/laudo.md`, no laboratório: quatro campos, `camada`, `hora`, `sintoma` e `acao`
 - o conserto num lugar que outra pessoa roda de novo: um commit na `main` do seu repositório da atividade 3, ou um `~/consertar.sh` executável
 
-Formato de cada linha do `sonda.log`: instante ISO com fuso, código de `/`, código de `/api/pokemons`, separados por espaço. Use `000` quando não houver resposta.
+Formato de cada linha do `monitor.log`: instante ISO com fuso, código de `/`, código de `/api/pokemons`, separados por espaço. Use `000` quando não houver resposta.
 
 ```
 2026-10-02T23:03:11+00:00 200 200
@@ -46,12 +46,14 @@ sintoma=/api/pokemons passou a responder 500 e a raiz continuou 200
 acao=refiz o deploy pelo pipeline, commit abc1234
 ```
 
-O campo `camada` é `banco`, `api` ou `front`. O campo `hora` é o instante ISO com fuso, como a sua sonda grava.
+O corretor também lê `~/sonda.log`, que é o nome que saiu no primeiro e-mail.
+
+O campo `camada` é `banco`, `api` ou `front`. O campo `hora` é o instante ISO com fuso, como o seu monitor grava.
 
 ## Os 6 itens
 
-1. A sonda gravando em `~/sonda.log`: no mínimo 60 linhas válidas, cobrindo 2 horas, com intervalo típico de até 3 minutos.
-2. A falha aparece na sonda: uma linha `200 200` na meia hora anterior à falha e uma linha com erro nos 20 minutos seguintes.
+1. O monitor gravando em `~/monitor.log`: no mínimo 60 linhas válidas, cobrindo 2 horas, com intervalo típico de até 3 minutos.
+2. A falha aparece no monitor: uma linha `200 200` na meia hora anterior à falha e uma linha com erro nos 20 minutos seguintes.
 3. A captura do momento da falha: no mínimo 5 pacotes na sua porta em `~/capturas/falha.pcap`, com pelo menos um entre 10 minutos antes e 2 horas depois da falha.
 4. O laudo com a camada certa e a hora dentro de 10 minutos da falha, com `sintoma` e `acao` preenchidos.
 5. O conserto é reproduzível: o front no ar foi criado depois da falha, e o conserto saiu de um push na `main` (com `DEPLOY_SHA` igual ao último commit) ou de um `~/consertar.sh` executável com os três `gr-docker run`.
@@ -64,13 +66,13 @@ Um `gr-docker start` na mão resolve o serviço e não conta no item 5, porque n
 ## Antes da janela abrir
 
 - a topologia de pé, respondendo na sua porta
-- a sonda rodando de um jeito que sobrevive à queda da sua sessão SSH
+- o monitor rodando de um jeito que sobrevive à queda da sua sessão SSH
 - o `tcpdump` gravando em arquivo, filtrado pela sua porta
 - o conserto pronto: o workflow da atividade 3, ou o `~/consertar.sh`
 
 Esta atividade não exige as anteriores concluídas. Se você não tem a topologia de pé, peça no canal `#atv-5-plantao`: o servidor monta uma para você, com as mesmas imagens e na sua faixa de portas, e os dados de acesso ficam em `~/atv5-ambiente.txt`. Quem não tem o pipeline verde entrega o conserto pelo `~/consertar.sh`.
 
-## Como a camada aparece na sonda
+## Como a camada aparece no monitor
 
 ```
 / 200   /api 500   → a camada do banco
@@ -82,8 +84,8 @@ Qual das falhas foi, dentro da camada, sai do log da API e de `gr-docker meus`. 
 
 ## Quando algo não funciona
 
-- A sonda mostra `000` nos dois códigos desde o começo: você está sondando `127.0.0.1`. Dentro do laboratório, o front está em `gr.lab.ayty.org:SUAPORTA`.
-- A sonda morreu quando você fechou o terminal: use `nohup`, `cron` ou um serviço do systemd.
+- O monitor mostra `000` nos dois códigos desde o começo: você está consultando `127.0.0.1`. Dentro do laboratório, o front está em `gr.lab.ayty.org:SUAPORTA`.
+- O monitor morreu quando você fechou o terminal: use `nohup`, `cron` ou um serviço do systemd.
 - O `/atividades` diz que a falha ainda não aconteceu: o seu minuto ainda não chegou, ou a sua topologia estava fora do ar e o servidor adiou.
 - O botão "Explicar o item" no Discord tem o passo a passo de cada item, com os comandos.
 - Outras dúvidas: `/ajuda problema texto: ...` no Discord.
