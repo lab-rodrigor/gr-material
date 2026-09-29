@@ -14,6 +14,7 @@ organização para ler.
 | **[📗 Roteiro de comandos Docker](./materialDocker-Elksandro.md)** | material do seminário de José Elksandro: imagens, containers, redes, volumes, Dockerfile e Compose |
 | **[🐧 Linux pelo terminal](./LINUX.md)** | consulta rápida para usar **durante** o CTF: comandos por tarefa, erros comuns e o que significam |
 | **[🚨 Um servidor da turma foi invadido](./INVASAO.md)** | o laboratório que não passou pelo CTF, minerando para outra pessoa por nove dias |
+| **[🔎 Atividade 4 — Captura de tráfego](./ATIVIDADE-4-TRAFEGO.md)** | 8 missões lidas nos pacotes que passam dentro do seu laboratório. Prazo: 02/10 às 20h |
 | **[🔍 Análise de tráfego](./TRAFEGO.md)** | tcpdump e Wireshark: o que saiu da máquina e o que chegou. Material do seminário 4 |
 | **[🎤 Seminários](./SEMINARIOS.md)** | os temas do semestre e quem apresenta cada um |
 
