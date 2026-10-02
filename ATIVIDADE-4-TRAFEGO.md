@@ -167,6 +167,7 @@ O corretor confere os três pacotes do aperto de mão, `[S]`, `[S.]` e `[.]`, co
 ## Quando algo não funciona
 
 - Nenhum pacote aparece: confira o filtro. `-i any` escuta em todas as interfaces, e `port 80` só mostra a porta 80.
+- Uma missão parece não estar emitindo: parte do tráfego sai pela interface de loopback, a `lo`. Com `-i eth0` esses pacotes não aparecem. Use `-i any`.
 - A saída rola sem parar: você está capturando a sua própria sessão SSH. Acrescente `not port 22`, ou a porta nova, se você mudou o SSH na missão 8 do CTF.
 - O `/atividades` diz "sem resposta em flags.txt": confira o nome do arquivo e o formato `missaoN=valor`.
 - Outras dúvidas: `/ajuda problema texto: ...` no Discord.
