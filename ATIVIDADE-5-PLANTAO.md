@@ -1,13 +1,13 @@
 # Atividade 5: plantão
 
-- Prazo: segunda-feira, 05/10/2026, até a meia-noite
+- Prazo: quarta-feira, 07/10/2026, às 22h (reaberto)
 - Unidade: 1 (última atividade da unidade)
 - Onde: no seu laboratório e no repositório da atividade 3
 - Acompanhamento: `/atividades atividade:5` no Discord
 
 O servidor vai derrubar uma camada da sua topologia num minuto sorteado, sem avisar. Você precisa perceber, dizer qual camada caiu e a que hora, e consertar por um push na `main`.
 
-A janela: a falha entra entre sexta-feira 02/10 às 20h e domingo 04/10 às 20h. O minuto é sorteado por aluno.
+A janela: a falha entra entre sexta-feira 02/10 às 20h e domingo 04/10 às 20h. O minuto é sorteado por aluno. Quem ainda não recebeu a falha recebe quando a topologia estiver de pé, até as 20h de 07/10.
 
 Se a sua topologia não estiver de pé na hora sorteada, o servidor adia a falha em uma hora e tenta de novo.
 
