@@ -170,6 +170,14 @@ Suba o agente:
 sudo snmpd -Lf /dev/null
 ```
 
+Se você ligou o firewall no CTF, ele está bloqueando a porta 161, e o servidor não vai conseguir perguntar. Libere só para a rede dos laboratórios:
+
+```
+sudo ufw allow from 172.30.0.0/16 to any port 161 proto udp
+```
+
+Confira com `sudo ufw status`: a linha precisa aparecer como `161/udp ALLOW 172.30.0.0/16`.
+
 E pergunte a ele mesmo, de dentro do laboratório:
 
 ```
@@ -221,6 +229,7 @@ Confira o que já conta com `/atividades atividade:7`.
 ## Quando algo não funciona
 
 - `Timeout: No Response`: o agente não está no ar, ou a community está errada, ou o endereço. Confira com `ss -lnup | grep 161` dentro do laboratório.
+- O agente responde de dentro do laboratório e o bot continua dizendo que não responde: é o firewall. Veja `sudo ufw status` e libere a 161/udp para `172.30.0.0/16`.
 - Os nomes aparecem como `iso.3.6.1.2.1...`: falta MIB. No seu laboratório elas já estão instaladas; se sumirem, o pacote é o `snmp-mibs-downloader`, e a linha `mibs :` do `/etc/snmp/snmp.conf` precisa estar comentada.
 - `snmptable` responde "Was that a table?": é o mesmo problema de MIB.
 - O `tcpdump` não mostra nada na 161: a pergunta do servidor chega de dois em dois minutos, então espere. E capture em `-i any`.
