@@ -6,7 +6,9 @@
 - Acompanhamento: `/atividades atividade:7` no Discord
 - Nota: proporcional aos itens cumpridos. 5 itens valem 10.
 
-Até agora você mediu de fora: o monitor da atividade 5 perguntava ao front por HTTP, e o Uptime Kuma fazia o mesmo com uma tela melhor. Os dois sabem se o serviço respondeu, e mais nada. Quantos bytes passaram pela interface na última hora, quanto de disco sobrou, há quanto tempo a máquina está ligada: nada disso sai de um GET.
+Nas atividades anteriores você mediu o servidor a partir de fora, pela rede. O monitor da atividade 5 perguntava ao front por HTTP, e o Uptime Kuma fazia o mesmo com uma tela melhor. Os dois dizem se o serviço respondeu, e nada além disso.
+
+Agora você vai buscar métricas de dentro do servidor ou do equipamento de rede. Quantos bytes passaram por cada interface, quanto de disco sobrou, há quanto tempo a máquina está ligada: nenhum desses números sai de um GET.
 
 É para isso que existe SNMP.
 
