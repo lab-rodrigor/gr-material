@@ -14,7 +14,7 @@ organização para ler.
 | **[📗 Roteiro de comandos Docker](./materialDocker-Elksandro.md)** | material do seminário de José Elksandro: imagens, containers, redes, volumes, Dockerfile e Compose |
 | **[🐧 Linux pelo terminal](./LINUX.md)** | consulta rápida para usar **durante** o CTF: comandos por tarefa, erros comuns e o que significam |
 | **[🚨 Um servidor da turma foi invadido](./INVASAO.md)** | o laboratório que não passou pelo CTF, minerando para outra pessoa por nove dias |
-| **[📟 Atividade 7 — SNMP](./ATIVIDADE-7-SNMP.md)** | o protocolo que os sistemas de monitoramento falam: consultar um agente, ler a tabela de interfaces e virar agente você mesmo |
+| **[📟 Atividade 7 — SNMP](./ATIVIDADE-7-SNMP.md)** | o protocolo que os sistemas de monitoramento falam: consultar um agente, ler a tabela de interfaces e virar agente você mesmo. Prazo: 16/10 às 20h |
 | **[📡 Aula de 13/10 — Captura na rede da sala](./AULA-13-10-CAPTURA-NA-SALA.md)** | três códigos escondidos em datagramas UDP em broadcast, capturados na hora da aula |
 | **[📈 Atividade 6 — Monitoramento com Uptime Kuma](./ATIVIDADE-6-MONITORAMENTO.md)** | subir um monitor de verdade sobre a sua topologia e ver uma queda ser registrada. Prazo: 06/10 às 12h |
 | **[🛠️ Atividade 5 — Plantão](./ATIVIDADE-5-PLANTAO.md)** | o servidor derruba uma camada da sua topologia num minuto sorteado: perceber, diagnosticar e consertar pelo pipeline. Prazo: 05/10 à meia-noite |

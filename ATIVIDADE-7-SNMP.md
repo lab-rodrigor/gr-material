@@ -1,7 +1,7 @@
 # Atividade 7: SNMP, perguntar números a uma máquina
 
-- Prazo: a definir
-- Unidade: a definir
+- Prazo: sexta-feira, 16/10/2026, às 20h
+- Unidade: 2
 - Onde: no seu laboratório
 - Acompanhamento: `/atividades atividade:7` no Discord
 - Nota: proporcional aos itens cumpridos. 5 itens valem 10.
