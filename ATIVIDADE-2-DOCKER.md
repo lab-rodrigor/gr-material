@@ -115,13 +115,9 @@ O navegador não precisa alcançar a API. Ele pede `/api/pokemons` ao front, e o
 
 ```mermaid
 graph LR
-    net(("internet")) -->|"SUA_PORTA"| front["front<br/>nginx"]
-    subgraph web["rede web"]
-        front --- api["API<br/>gr-atv2-api"]
-    end
-    subgraph dados["rede dados, interna"]
-        api --- banco[("banco<br/>postgres")]
-    end
+    net(("internet")) -->|"SUA_PORTA"| front["front (nginx)"]
+    front ---|"rede web"| api["API"]
+    api ---|"rede dados, interna"| banco["banco (postgres)"]
     banco --- vol[("volume pgdata")]
 ```
 
