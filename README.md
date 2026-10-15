@@ -14,8 +14,10 @@ organização para ler.
 | **[📗 Roteiro de comandos Docker](./materialDocker-Elksandro.md)** | material do seminário de José Elksandro: imagens, containers, redes, volumes, Dockerfile e Compose |
 | **[🐧 Linux pelo terminal](./LINUX.md)** | consulta rápida para usar **durante** o CTF: comandos por tarefa, erros comuns e o que significam |
 | **[🚨 Um servidor da turma foi invadido](./INVASAO.md)** | o laboratório que não passou pelo CTF, minerando para outra pessoa por nove dias |
+| **[📊 Atividade 9: o gráfico do seu laboratório](./ATIVIDADE-9-GRAFICOS.md)** | um exportador no seu laboratório, o Prometheus da disciplina coletando e o painel no Grafana |
+| **[📈 Prometheus e Grafana](./PROMETHEUS-E-GRAFANA.md)** | as quatro peças de um gráfico de rede, o modelo de coleta e a linguagem das consultas |
 | **[🔔 Atividade 8: quando o agente avisa](./ATIVIDADE-8-TRAPS.md)** | traps e métrica própria: o agente fala sem ser perguntado, e publica um número que a MIB não tem. Prazo: 19/10 às 20h |
-| **[📟 Atividade 7: sNMP](./ATIVIDADE-7-SNMP.md)** | o protocolo que os sistemas de monitoramento falam: consultar um agente, ler a tabela de interfaces e virar agente você mesmo. Prazo: 16/10 às 20h |
+| **[📟 Atividade 7: SNMP](./ATIVIDADE-7-SNMP.md)** | o protocolo que os sistemas de monitoramento falam: consultar um agente, ler a tabela de interfaces e virar agente você mesmo. Prazo: 16/10 às 20h |
 | **[📈 Atividade 6: monitoramento com Uptime Kuma](./ATIVIDADE-6-MONITORAMENTO.md)** | subir um monitor de verdade sobre a sua topologia e ver uma queda ser registrada. Prazo: 06/10 às 12h |
 | **[🛠️ Atividade 5: plantão](./ATIVIDADE-5-PLANTAO.md)** | o servidor derruba uma camada da sua topologia num minuto sorteado: perceber, diagnosticar e consertar pelo pipeline. Prazo: 05/10 à meia-noite |
 | **[🔎 Atividade 4: captura de tráfego](./ATIVIDADE-4-TRAFEGO.md)** | 8 missões lidas nos pacotes que passam dentro do seu laboratório. Prazo: 02/10 às 20h |
