@@ -14,17 +14,17 @@ Agora você vai buscar métricas de dentro do servidor ou do equipamento de rede
 
 ## O que é SNMP
 
-SNMP é um protocolo para perguntar números a um equipamento. Ele tem dois lados:
+SNMP é o protocolo que um sistema de gerência usa para ler e escrever valores mantidos por um equipamento. Nesta atividade você só lê, que é o uso mais comum e o único que a configuração do agente da disciplina permite.
 
-O **agente** roda na máquina observada e mantém uma lista de valores: bytes que passaram em cada interface, memória livre, processos rodando, há quanto tempo está no ar. Ele não envia nada por conta própria, fica esperando a pergunta.
+A conversa tem dois lados. O **agente** roda na máquina observada e mantém os valores: bytes que passaram em cada interface, memória livre, processos em execução, tempo desde o último reinício. Ele responde quando perguntam e não envia nada por conta própria. O **gerente** é quem pergunta, e pode ser um comando de uma linha, como você vai usar hoje, ou um sistema que consulta trezentos equipamentos de minuto em minuto e desenha gráficos.
 
-O **gerente** é quem pergunta. Pode ser um comando de uma linha, como você vai usar hoje, ou um sistema que pergunta a trezentos equipamentos de minuto em minuto e desenha gráficos.
+As perguntas vão por UDP, na porta 161. Sem conexão estabelecida, uma pergunta perdida no caminho não gera erro em lado nenhum, e cabe ao gerente repetir depois do tempo de espera. O `snmpget` faz isso sozinho, com cinco segundos de espera e uma repetição.
 
-A conversa é por UDP, na porta 161. Uma pergunta, uma resposta.
+### Objetos, OIDs e a MIB
 
-### O nome de cada valor
+O agente não guarda um texto livre, e sim um conjunto de **objetos** definidos em documentos chamados MIB. Cada MIB especifica, para cada objeto, o nome, o tipo do valor, se ele é de leitura ou de escrita e o que ele significa. A MIB-2, publicada na RFC 1213, define os objetos que todo equipamento precisa ter, como a descrição do sistema e a tabela de interfaces.
 
-Cada valor que o agente guarda tem um endereço numérico, chamado OID, que é um caminho numa árvore:
+Cada objeto recebe um identificador numérico, o **OID**, que é um caminho numa árvore:
 
 ```
 1.3.6.1.2.1.1.1.0
@@ -40,28 +40,48 @@ graph TD
     m --> mib["1 · mib-2"]
     mib --> sys["1 · system"]
     mib --> ifs["2 · interfaces"]
-    sys --> sd["1.0 · sysDescr"]
+    sys --> sd["1 · sysDescr"]
     ifs --> tab["2 · ifTable"]
-    p --> ent["1 · enterprises<br/>cada fabricante tem um ramo"]
+    p --> ent["1 · enterprises<br/>um ramo por fabricante"]
 ```
 
-Esse caminho é sempre o mesmo em qualquer equipamento do mundo: é a descrição do sistema. Um fabricante de roteador não pode mudá-lo de lugar, e é isso que faz um gerente falar com equipamento de dez marcas diferentes.
+Esse caminho vale igual em qualquer equipamento. Um fabricante não pode mudar a descrição do sistema de lugar, e é essa estabilidade que permite a um gerente falar com equipamento de dez marcas diferentes. O que cada fabricante acrescenta de próprio fica abaixo do ramo `enterprises`.
 
-Decorar número seria impossível, então existe a **MIB**, que é um dicionário de nomes para esses caminhos. Com a MIB instalada, o mesmo valor se escreve assim:
+Decorar números seria impraticável, e os arquivos de MIB instalados no seu laboratório fazem a tradução. Com eles, o mesmo objeto se escreve pelo nome:
 
 ```
 SNMPv2-MIB::sysDescr.0
 ```
 
-O `.0` no fim não é enfeite. Ele significa "este valor é único, não é uma lista". Valores que existem em várias cópias, um por interface, terminam com o número da interface.
+### Objeto e instância
+
+O OID do objeto termina em `1`, e a consulta acima termina em `1.0`. Esse último número é a **instância**.
+
+Objetos que existem em cópia única, como a descrição do sistema, têm uma instância só, identificada por `.0`. Objetos que existem em várias cópias, como os bytes que entraram numa interface, têm uma instância por linha da tabela, identificada pelo índice: `ifInOctets.2` é o contador da interface de índice 2.
+
+Pedir `sysDescr` sem o `.0` devolve erro, porque você estaria pedindo o objeto, e o que trafega é sempre uma instância.
+
+### O tipo do valor muda a leitura
+
+A resposta do agente vem com o tipo, e ele diz como interpretar o número:
+
+`STRING` é texto livre, como a descrição do sistema.
+
+`INTEGER` é um número com significado próprio, às vezes com rótulo: a MIB-2 define `ifOperStatus` com `1` para `up` e `2` para `down`.
+
+`Gauge32` é uma medida instantânea, que sobe e desce, como o número de processos.
+
+`Counter32` só cresce e volta a zero quando estoura. Os bytes de uma interface são contador, e é por isso que o passo 5 existe.
+
+`Timeticks` conta centésimos de segundo desde que o agente subiu.
 
 ### As três versões
 
-A **v1** é de 1988 e ainda aparece em equipamento velho.
+A **v1**, de 1988, ainda aparece em equipamento antigo.
 
-A **v2c** é a mais usada. A autenticação é uma palavra chamada *community*, que viaja em texto puro dentro do pacote. Quem captura o pacote lê a palavra. Você vai ver isso acontecer hoje.
+A **v2c** é a mais usada. A autenticação é uma palavra chamada *community*, enviada em texto puro dentro do pacote, e qualquer um que capture o tráfego a lê. O passo 6 mostra isso acontecendo.
 
-A **v3** tem usuário, senha e cifra. É o que se usa quando a consulta sai da rede local.
+A **v3** acrescenta usuário, autenticação por senha e cifra do conteúdo. É o que se usa quando a consulta atravessa uma rede que você não controla.
 
 ## O que você vai fazer
 
@@ -83,7 +103,7 @@ O `snmpget`, o `snmpwalk` e o `snmptable` já estão instalados, com as MIBs.
 snmpget -v2c -c redes2026 172.30.0.161 SNMPv2-MIB::sysDescr.0
 ```
 
-Lendo o comando: `-v2c` é a versão, `-c redes2026` é a community, depois vem o endereço do agente e o valor que você quer.
+Lendo o comando: `-v2c` escolhe a versão, `-c redes2026` passa a community, e em seguida vêm o endereço do agente e a instância que você quer ler.
 
 A resposta sai assim:
 
@@ -107,11 +127,11 @@ O `snmpget` pede um valor. O `snmpwalk` pede todos os valores abaixo de um ponto
 snmpwalk -v2c -c redes2026 172.30.0.161 SNMPv2-MIB::system
 ```
 
-Saem o nome, a localização, o contato, o tempo no ar. É assim que se descobre o que um equipamento desconhecido tem para oferecer: você caminha e vê.
+Saem o nome, a localização, o contato e o tempo desde o último reinício. Diante de um equipamento desconhecido, caminhar pela árvore é como se descobre quais objetos ele implementa.
 
 ## Passo 4: a tabela de interfaces
 
-Aqui a coisa fica interessante. Tudo o que tem uma cópia por interface vive numa tabela, e existe um comando que a desenha:
+Os objetos com uma instância por interface ficam numa tabela, e o `snmptable` a monta em colunas:
 
 ```
 snmptable -v2c -c redes2026 -Cb 172.30.0.161 IF-MIB::ifTable
@@ -123,7 +143,7 @@ snmptable -v2c -c redes2026 -Cb 172.30.0.161 IF-MIB::ifTable
      2  eth0   ethernetCsmacd  1500 ...             up         up      2768      3110
 ```
 
-Cada linha é uma interface. `InOctets` e `OutOctets` são os bytes que entraram e saíram desde que a máquina ligou.
+Cada linha é uma interface, identificada pelo índice da primeira coluna. Esse índice é o que aparece no fim do OID quando você pede um valor dessa linha, como em `ifInOctets.2`. As colunas `InOctets` e `OutOctets` trazem os bytes que entraram e saíram desde o último reinício.
 
 **Escreva o nome da interface de índice 2** em `~/snmp.txt`:
 
@@ -133,7 +153,7 @@ item2=...
 
 ## Passo 5: de contador para taxa
 
-O `InOctets` é um número que só cresce. O agente não sabe dizer "estão passando 2 Mbit/s": ele guarda o total desde o início. A velocidade é uma conta que o gerente faz, com duas leituras:
+O `InOctets` é um `Counter32`, e contador só cresce. O agente não oferece a velocidade em bits por segundo em lugar nenhum da MIB-2. Quem calcula é o gerente, com duas leituras e a diferença entre elas:
 
 ```
 A=$(snmpget -v2c -c redes2026 -Oqv 172.30.0.161 IF-MIB::ifInOctets.2)
@@ -142,9 +162,9 @@ B=$(snmpget -v2c -c redes2026 -Oqv 172.30.0.161 IF-MIB::ifInOctets.2)
 echo "$(( (B - A) / 10 )) bytes por segundo"
 ```
 
-É exatamente isso que todo gráfico de banda faz, a cada intervalo, para sempre.
+Todo gráfico de banda é feito assim, repetindo essa conta a cada intervalo de coleta.
 
-Dois detalhes que mordem na vida real. O contador é de 32 bits e volta a zero quando estoura, o que numa interface de 1 Gbit/s acontece em poucos minutos; por isso existe o `ifHCInOctets`, de 64 bits. E se o equipamento reiniciar entre as duas leituras, a subtração dá negativo, o que você precisa tratar.
+Duas situações quebram essa conta. O contador de 32 bits estoura e volta a zero, o que numa interface de 1 Gbit/s saturada acontece em cerca de 34 segundos, e por isso a MIB define o `ifHCInOctets`, de 64 bits. E quando o equipamento reinicia entre as duas leituras, o contador recomeça do zero e a subtração fica negativa, caso que o coletor precisa descartar.
 
 ## Passo 6: a community em texto puro
 
@@ -162,7 +182,7 @@ Espere a próxima pergunta chegar. No meio dos caracteres ilegíveis do pacote a
 item3=GR7-...
 ```
 
-Ela aparece mesmo com o seu agente desligado: o pacote chega de qualquer maneira, e quem captura, lê. É esse o problema do v2c, e é por isso que ninguém expõe SNMP v2c para a internet.
+A palavra aparece mesmo com o seu agente desligado, porque o pacote chega à interface de qualquer maneira e a captura acontece antes de qualquer processamento. Essa é a limitação do v2c que motivou a v3, e a razão de ninguém expor SNMP v2c à internet.
 
 ## Passo 7: agora você é o agente
 
@@ -177,7 +197,7 @@ sysLocation SEU-SLUG
 
 Troque `SEU-SLUG` pelo seu identificador, aquele que aparece no nome do seu laboratório: se o seu e-mail é `joao.silva@dcx.ufpb.br`, o slug é `joao-silva`.
 
-Lendo as linhas: `agentaddress` diz em que porta escutar, `rocommunity` cria uma senha de leitura válida só para quem vem daquela rede, e `sysLocation` é um texto livre que o agente devolve.
+Lendo as linhas: `agentaddress` define em que porta o agente escuta, `rocommunity` cria uma community de leitura válida apenas para quem vem da rede indicada, e `sysLocation` preenche um objeto da MIB-2 com um texto livre.
 
 Suba o agente:
 
@@ -225,9 +245,9 @@ snmpget -v3 -l authPriv -u aluno -a SHA-512 -A redes2026snmp -x AES -X redes2026
   127.0.0.1 SNMPv2-MIB::sysLocation.0
 ```
 
-`-l authPriv` quer dizer autenticado e cifrado. Existem também `noAuthNoPriv` e `authNoPriv`, que autenticam sem esconder o conteúdo.
+O `-l authPriv` pede autenticação e cifra. A v3 define outros dois níveis: `noAuthNoPriv`, sem nenhuma das duas, e `authNoPriv`, que autentica o usuário e deixa o conteúdo legível na rede.
 
-**Capture essa consulta** como você fez no passo 6 e compare. Em v2c você lia a community e o valor. Aqui não se lê nem o nome do usuário.
+**Capture essa consulta** como você fez no passo 6 e compare com a anterior. Na v2c você leu a community e o valor devolvido. Na v3 com `authPriv`, o nome do usuário também viaja cifrado.
 
 ## Os 5 itens
 
