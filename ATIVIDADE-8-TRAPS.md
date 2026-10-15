@@ -38,13 +38,33 @@ Os dois desenhos descrevem a mesma queda. O que muda é quem fala primeiro, e o 
 
 ## O que é um trap
 
-Um trap é uma mensagem que o agente envia por conta própria ao gerente. A porta é a 162, vizinha da 161 que você já usou, e o transporte continua sendo UDP.
+Trap é o nome que a v1 deu à **notificação**: uma mensagem que o agente envia ao gerente sem ter sido perguntado. A v2c manteve o nome e acrescentou o `inform`, que é a mesma notificação com confirmação de recebimento.
 
-Do outro lado existe um receptor esperando. Nesta atividade ele é o mesmo `roteador-escola`, em `172.30.0.161`, onde eu deixei um `snmptrapd` escutando a porta 162 e registrando tudo o que chega. A community dele é `alertas`.
+A notificação vai por UDP para a porta 162, vizinha da 161 que você usou na atividade 7. As duas portas pertencem a papéis diferentes: na 161 o agente escuta perguntas, e na 162 quem escuta é o receptor de notificações, que costuma ficar na máquina do gerente.
 
-Um trap carrega o tempo que o agente está no ar, um OID que identifica o tipo de aviso e um ou mais pares de OID e valor. Quem envia escolhe o conteúdo desses pares.
+O agente não descobre sozinho para onde mandar. O endereço do receptor fica na configuração dele, e é isso que você faz no passo 2.
 
-O trap não tem resposta. O agente envia e não espera confirmação, então um pacote perdido no caminho passa despercebido pelos dois lados. Existe uma variante com confirmação, o `inform`, que fica fora desta atividade.
+### O que viaja numa notificação
+
+Toda notificação de v2c carrega dois objetos obrigatórios, nesta ordem:
+
+`sysUpTime.0`, o tempo desde que o agente subiu, que situa o evento no tempo da máquina que avisou.
+
+`snmpTrapOID.0`, o OID que identifica o tipo do aviso. As notificações padrão vêm definidas em MIB, como `coldStart` para o reinício e `linkDown` e `linkUp` para a mudança de estado de uma interface.
+
+Depois desses dois vêm os pares de OID e valor acrescentados pelo agente, chamados *varbinds*. Quem envia escolhe quais são, e é por aí que o aviso carrega a medida que motivou o alerta.
+
+Você vai ver esses três elementos no registro do receptor e na sua própria captura.
+
+### O que o trap não garante
+
+O trap não tem resposta. O agente envia e segue adiante, então um pacote perdido no caminho não é percebido por nenhum dos dois lados. O `inform` existe para esse caso: o receptor confirma, e o agente repete enquanto não receber a confirmação, ao custo de guardar estado e de um pacote a mais por aviso.
+
+Há um segundo risco, do lado oposto. Uma interface que oscila gera uma notificação a cada mudança, e um equipamento com problema intermitente pode enterrar o receptor em avisos. Por isso o monitoramento de produção usa os dois mecanismos: a varredura mantém o retrato do estado, e as notificações antecipam os eventos entre uma varredura e outra.
+
+### O receptor desta atividade
+
+O receptor é o mesmo `roteador-escola`, em `172.30.0.161`. Nele roda um `snmptrapd` escutando a porta 162, configurado para registrar o que chega com a community `alertas`. Notificação que chegar com outra community é descartada sem registro.
 
 ## Passo 1: mandar um trap à mão
 
@@ -61,17 +81,17 @@ Lendo o comando por partes:
 
 `172.30.0.161` é para onde o aviso vai.
 
-As aspas vazias são o tempo de atividade. Deixe assim e o próprio agente preenche.
+As aspas vazias são o `sysUpTime.0`. Com elas vazias, o `snmptrap` preenche o valor com o tempo da própria máquina.
 
-`1.3.6.1.4.1.8072.2.3.0.1` é o OID que identifica o tipo de aviso. Esse é um OID de exemplo do net-snmp, que serve para testar sem inventar um número próprio.
+`1.3.6.1.4.1.8072.2.3.0.1` é o valor de `snmpTrapOID.0`, o tipo do aviso. Esse OID vem da MIB de exemplos do net-snmp e serve para testar sem precisar registrar um número próprio no ramo `enterprises`.
 
-O resto é o par que viaja junto: o OID `sysLocation.0`, o tipo `s` de texto, e o valor.
+O resto é o varbind que viaja junto, em três partes: o OID `sysLocation.0`, o tipo `s` de texto e o valor.
 
 O comando não imprime nada quando dá certo, porque não existe resposta para esperar. Confira pelo `/atividades atividade:8`.
 
 ## Passo 2: o agente avisando sozinho
 
-Mandar trap na mão serve para entender o caminho. O uso de verdade é o agente avisar quando algo acontece com ele.
+O comando do passo 1 mostra o caminho funcionando. O agente também avisa por conta própria quando algo acontece com ele, e é isso que você configura agora.
 
 Acrescente uma linha ao `/etc/snmp/snmpd.conf`:
 
@@ -79,7 +99,7 @@ Acrescente uma linha ao `/etc/snmp/snmpd.conf`:
 trap2sink 172.30.0.161 alertas
 ```
 
-Ela diz ao agente para onde mandar os avisos dele. Reinicie:
+A linha tem o endereço do receptor e a community que ele aceita. Reinicie o agente:
 
 ```
 sudo pkill snmpd
@@ -92,7 +112,7 @@ Ao subir, o agente manda sozinho um `coldStart`, o aviso de reinício. Equipamen
 
 As MIBs trazem o que os autores previram: interfaces, memória, disco, processos. Elas não trazem quantos pedidos a sua aplicação respondeu, nem quantos arquivos ficaram na fila de backup.
 
-A diretiva `extend` liga um comando seu a um OID. O agente executa o comando quando alguém pergunta, e devolve a saída como valor.
+A diretiva `extend` liga um comando seu a um OID. O agente executa esse comando a cada consulta, com o usuário dele, e devolve a saída como valor. Comando demorado deixa a consulta demorada, e um comando que trava segura o agente, então o que entra aqui precisa ser rápido e previsível.
 
 Acrescente ao `/etc/snmp/snmpd.conf`:
 
@@ -109,9 +129,11 @@ snmpget -v2c -c turma -Oqv 127.0.0.1 \
 
 O nome que você deu, `processos`, faz parte do OID, entre aspas. Para o item contar, ele precisa ser exatamente esse, porque é por ele que eu vou perguntar.
 
-As aspas simples em volta do OID inteiro existem para o shell não comer as aspas duplas de dentro.
+O `extend` publica mais de um objeto para o mesmo nome. O `nsExtendOutputFull` traz a saída inteira, o `nsExtendOutLine` traz uma instância por linha da saída, e o `nsExtendResult` traz o código de saída do comando, que é por onde um gerente descobre que o comando falhou.
 
-A partir daqui qualquer gerente lê o seu número como lê qualquer outro valor da MIB. O `extend` transforma a saída de um comando local em valor consultável pela rede.
+As aspas simples em volta do OID inteiro protegem as aspas duplas de dentro, que o shell removeria.
+
+A partir daqui qualquer gerente lê o seu número como lê qualquer outro valor da MIB. O `extend` transforma a saída de um comando local em valor consultável pela rede, e é assim que métrica de aplicação entra num sistema de gerência que só fala SNMP.
 
 ## Passo 4: o trap com a medida dentro
 
