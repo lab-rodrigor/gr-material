@@ -113,9 +113,19 @@ O navegador não precisa alcançar a API. Ele pede `/api/pokemons` ao front, e o
 
 **Como fica.** A API é a única em duas redes: ela conversa com o front de um lado e com o banco do outro. É ela que decide o que passa entre os dois.
 
+```mermaid
+graph LR
+    net(("internet")) -->|"SUA_PORTA"| front["front<br/>nginx"]
+    subgraph web["rede web"]
+        front --- api["API<br/>gr-atv2-api"]
+    end
+    subgraph dados["rede dados, interna"]
+        api --- banco[("banco<br/>postgres")]
+    end
+    banco --- vol[("volume pgdata")]
 ```
-front  ──[ web ]──  api  ──[ dados (interna) ]──  banco
-```
+
+A internet chega só ao front, pela porta que você publicou. A API aparece nas duas redes, e é por isso que ela alcança o banco e o front não. A rede `dados` não tem rota para fora, e o volume guarda o que o banco escreve.
 
 **Faça.** Suba a API numa rede e junte a outra depois:
 `gr-docker network connect web api`.

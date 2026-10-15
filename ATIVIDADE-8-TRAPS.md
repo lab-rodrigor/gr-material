@@ -12,6 +12,30 @@ O intervalo entre as perguntas vira atraso na descoberta. Com varredura de cinco
 
 O trap inverte a direção. O agente manda o aviso no momento do evento, sem esperar pergunta.
 
+```mermaid
+sequenceDiagram
+    autonumber
+    participant G as Gerente
+    participant A as Agente
+    rect rgb(240, 240, 240)
+    Note over G,A: varredura, de 5 em 5 minutos
+    G->>A: 10:00 get ifOperStatus
+    A-->>G: up
+    Note over A: 10:02 a interface cai
+    G->>A: 10:05 get ifOperStatus
+    A-->>G: down
+    Note over G: descobriu 3 minutos depois
+    end
+    rect rgb(240, 240, 240)
+    Note over G,A: trap
+    Note over A: 10:02 a interface cai
+    A->>G: 10:02 linkDown
+    Note over G: descobriu na hora
+    end
+```
+
+Os dois desenhos descrevem a mesma queda. O que muda é quem fala primeiro, e o atraso entre o evento e a descoberta.
+
 ## O que é um trap
 
 Um trap é uma mensagem que o agente envia por conta própria ao gerente. A porta é a 162, vizinha da 161 que você já usou, e o transporte continua sendo UDP.

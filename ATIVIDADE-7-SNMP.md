@@ -30,6 +30,21 @@ Cada valor que o agente guarda tem um endereço numérico, chamado OID, que é u
 1.3.6.1.2.1.1.1.0
 ```
 
+```mermaid
+graph TD
+    r["1 · iso"] --> o["3 · org"]
+    o --> d["6 · dod"]
+    d --> i["1 · internet"]
+    i --> m["2 · mgmt"]
+    i --> p["4 · private"]
+    m --> mib["1 · mib-2"]
+    mib --> sys["1 · system"]
+    mib --> ifs["2 · interfaces"]
+    sys --> sd["1.0 · sysDescr"]
+    ifs --> tab["2 · ifTable"]
+    p --> ent["1 · enterprises<br/>cada fabricante tem um ramo"]
+```
+
 Esse caminho é sempre o mesmo em qualquer equipamento do mundo: é a descrição do sistema. Um fabricante de roteador não pode mudá-lo de lugar, e é isso que faz um gerente falar com equipamento de dez marcas diferentes.
 
 Decorar número seria impossível, então existe a **MIB**, que é um dicionário de nomes para esses caminhos. Com a MIB instalada, o mesmo valor se escreve assim:
