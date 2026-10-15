@@ -1,4 +1,4 @@
-# Atividade 2 — Três camadas com Docker
+# Atividade 2: três camadas com Docker
 
 - Prazo: sábado, 19/09/2026, às 20h
 - Unidade: 1
@@ -61,7 +61,7 @@ A API cria a tabela e os pokémons na primeira vez que alcança o banco. Enquant
 
 **Faça.** Três `gr-docker run`, um por imagem. Confira com `gr-docker meus`.
 
-**Cuidado com a ordem.** Suba o banco primeiro. A API espera por ele durante um minuto e loga cada tentativa, então subir fora de ordem não quebra nada — mas olhar o log ajuda a entender o que está acontecendo.
+**Cuidado com a ordem.** Suba o banco primeiro. A API espera por ele durante um minuto e loga cada tentativa, então subir fora de ordem não quebra nada. Olhar o log ajuda a entender o que está acontecendo.
 
 ### 2. Só o front publicado, na sua faixa
 
@@ -79,7 +79,7 @@ A API cria a tabela e os pokémons na primeira vez que alcança o banco. Enquant
 
 **Por que importa.** É a diferença entre alguém falar com a sua API e alguém falar com o seu front. Se a API estivesse publicada, qualquer pessoa na internet conversaria direto com ela, sem passar pelo que o front controla.
 
-O navegador não precisa alcançar a API. Ele pede `/api/pokemons` ao front, e o nginx do front repassa por dentro da rede. Quem faz a chamada é o front, não o navegador.
+O navegador não precisa alcançar a API. Ele pede `/api/pokemons` ao front, e o nginx do front repassa por dentro da rede. Quem faz a chamada é o front.
 
 **Faça.** Nenhum `-p` no `gr-docker run` da API.
 
@@ -130,9 +130,9 @@ front  ──[ web ]──  api  ──[ dados (interna) ]──  banco
 
 **Investigue nesta ordem:**
 
-1. `gr-docker logs front` — ele diz qual nome não resolveu
-2. `gr-docker logs api` — ela loga cada tentativa de falar com o banco
-3. `gr-docker inspect api` — em quais redes ela está
+1. `gr-docker logs front`, que diz qual nome não resolveu
+2. `gr-docker logs api`, que registra cada tentativa de falar com o banco
+3. `gr-docker inspect api`, que mostra em quais redes ela está
 
 O log do front resolve a maioria dos casos.
 

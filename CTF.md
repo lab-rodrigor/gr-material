@@ -1,4 +1,4 @@
-# CTF — Preparando um servidor do zero
+# CTF: preparando um servidor do zero
 
 **Gerência de Redes 2026.2 · DCX/UFPB**
 
@@ -237,7 +237,7 @@ O `unattended-upgrades` fecha essa janela: ele aplica as atualizações de segur
 
 **Faça.** `MaxAuthTries 3`, `LoginGraceTime 30`, `AllowTcpForwarding no`.
 
-**Verifique com `sshd -T`.** Ele mostra o que o serviço está usando, e não o que você escreveu no arquivo.
+**Verifique com `sshd -T`.** Ele mostra o que o serviço está usando. O arquivo pode ter uma linha que o serviço ignorou.
 
 > **Como eu verifico:** MaxAuthTries ≤ 3, LoginGraceTime ≤ 60, AllowTcpForwarding no.
 
@@ -308,5 +308,5 @@ chegou.
 
 ---
 
-<sub>Dúvidas no canal da atividade. O `/ctf` verifica o seu servidor de verdade —
+<sub>Dúvidas no canal da atividade. O `/ctf` verifica o seu servidor de verdade:
 se ele discorda de você, ele está certo: olhe a evidência que ele mostra.</sub>

@@ -49,7 +49,7 @@ man ls             # manual completo, saia com q
 apropos firewall   # procura comandos por assunto
 ```
 
-Caiu no vim sem querer? `Esc` e depois `:q!` e `Enter`. Sai sem salvar.
+Para sair do vim sem salvar, aperte `Esc` e depois escreva `:q!` seguido de `Enter`.
 
 ---
 
@@ -153,8 +153,8 @@ sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
 
 Custa dois segundos e já salvou muita gente.
 
-Depois de editar, quase sempre é preciso recarregar o serviço, porque o programa
-leu o arquivo quando subiu e não sabe que você mudou:
+Depois de editar, quase sempre é preciso recarregar o serviço. Ele lê o arquivo
+de configuração ao subir e continua com a versão que leu:
 
 ```bash
 sudo systemctl reload ssh     # relê a configuração sem derrubar conexões

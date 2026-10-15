@@ -27,7 +27,7 @@ O que vocês têm é um comando, o `gr-docker`, que roda com privilégio mas dec
 o que pode. É o padrão que se usa em servidor compartilhado de verdade: em vez
 de dar a chave da casa, dar uma porta com regra.
 
-Acesso se define pelo que a pessoa pode fazer, e não por uma permissão única que
+Acesso se define pelo que a pessoa pode fazer, em vez de uma permissão única que
 liga ou desliga tudo. Boa parte do trabalho de administrar sistemas é desenhar
 essa fronteira.
 
@@ -116,7 +116,8 @@ E abra no navegador: `http://gr.lab.ayty.org:23000`
 
 ## Ciclo de vida
 
-Um container não é um programa rodando: é um objeto com estados.
+Um container é um objeto com estados. Parar não apaga, e o container parado
+continua existindo com o que foi escrito nele.
 
 ```bash
 gr-docker stop meu-site       # para, mas não some
@@ -126,8 +127,8 @@ gr-docker restart meu-site
 gr-docker rm meu-site         # aí sim, some
 ```
 
-**Experimente e observe:** pare o container, edite nada, inicie de novo. O que
-sobreviveu? Agora apague e recrie. O que se perdeu?
+**Experimente.** Pare o container, não edite nada e inicie de novo, e veja o
+que sobreviveu. Depois apague, recrie e compare o que se perdeu.
 
 Parar preserva o container e apagar o descarta, e essa diferença é a base para entender
 volumes, que é o próximo assunto.

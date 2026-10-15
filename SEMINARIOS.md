@@ -1,4 +1,4 @@
-# Seminários — Gerência de Redes 2026.2
+# Seminários de Gerência de Redes 2026.2
 
 | # | Tema | Quem apresenta | Data |
 |---|---|---|---|
