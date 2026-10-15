@@ -1,6 +1,6 @@
 # Atividade 8: quando o agente avisa
 
-- Prazo: quinta-feira, 22/10/2026, às 20h
+- Prazo: segunda-feira, 19/10/2026, às 20h
 - Unidade: 2
 - Onde: no seu laboratório
 - Acompanhamento: `/atividades atividade:8` no Discord
