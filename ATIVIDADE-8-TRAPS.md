@@ -6,11 +6,11 @@
 - Acompanhamento: `/atividades atividade:8` no Discord
 - Nota: proporcional aos itens cumpridos. 4 itens valem 10.
 
-Na atividade 7 você perguntou e o agente respondeu. Toda a conversa começava do seu lado: sem pergunta, nenhuma resposta, por mais que a máquina observada tivesse algo a dizer.
+Na atividade 7 o gerente iniciava toda a conversa. O agente respondia o que era perguntado e não tinha como avisar nada por conta própria.
 
-Isso tem um custo que aparece quando a rede cresce. Se o seu gerente pergunta a cada cinco minutos, uma interface que cai logo depois da pergunta fica cinco minutos caída sem ninguém saber. Perguntar de dez em dez segundos reduz a espera e multiplica o tráfego e a carga nos equipamentos.
+O intervalo entre as perguntas vira atraso na descoberta. Com varredura de cinco em cinco minutos, uma interface que cai logo depois da pergunta fica cinco minutos caída sem ninguém saber. Perguntar de dez em dez segundos reduz esse atraso e multiplica o tráfego e a carga nos equipamentos.
 
-O trap resolve isso pelo outro lado: o agente manda um aviso na hora em que o evento acontece, sem esperar pergunta nenhuma.
+O trap inverte a direção. O agente manda o aviso no momento do evento, sem esperar pergunta.
 
 ## O que é um trap
 
@@ -18,9 +18,9 @@ Um trap é uma mensagem que o agente envia por conta própria ao gerente. A port
 
 Do outro lado existe um receptor esperando. Nesta atividade ele é o mesmo `roteador-escola`, em `172.30.0.161`, onde eu deixei um `snmptrapd` escutando a porta 162 e registrando tudo o que chega. A community dele é `alertas`.
 
-O que viaja num trap: o tempo que o agente está no ar, um OID que diz o tipo de aviso, e um ou mais pares de OID e valor que o agente quis mandar junto. O conteúdo desses pares é escolha de quem envia.
+Um trap carrega o tempo que o agente está no ar, um OID que identifica o tipo de aviso e um ou mais pares de OID e valor. Quem envia escolhe o conteúdo desses pares.
 
-O trap não tem resposta. O agente manda e segue a vida, e se o pacote se perder no caminho, ninguém reclama. Isso é o UDP aparecendo de novo: existe a versão `inform`, que pede confirmação, e ela não entra nesta atividade.
+O trap não tem resposta. O agente envia e não espera confirmação, então um pacote perdido no caminho passa despercebido pelos dois lados. Existe uma variante com confirmação, o `inform`, que fica fora desta atividade.
 
 ## Passo 1: mandar um trap à mão
 
@@ -62,7 +62,7 @@ sudo pkill snmpd
 sudo snmpd -Lf /dev/null
 ```
 
-Ao subir, o agente manda sozinho um `coldStart`, que é o aviso de "acabei de ligar". Todo equipamento de rede faz isso, e é assim que um sistema de monitoramento descobre que um roteador reiniciou de madrugada sem ter perguntado nada a ele.
+Ao subir, o agente manda sozinho um `coldStart`, o aviso de reinício. Equipamento de rede faz isso de fábrica, e é por esse aviso que um sistema de monitoramento registra que um roteador reiniciou de madrugada, sem ter perguntado nada.
 
 ## Passo 3: publicar uma métrica que não existe na MIB
 
@@ -87,7 +87,7 @@ O nome que você deu, `processos`, faz parte do OID, entre aspas. Para o item co
 
 As aspas simples em volta do OID inteiro existem para o shell não comer as aspas duplas de dentro.
 
-A partir daqui, qualquer gerente do mundo lê o seu número sem saber que por trás dele existe um `ps`. É isso que `extend` faz: transforma um comando local em valor consultável pela rede.
+A partir daqui qualquer gerente lê o seu número como lê qualquer outro valor da MIB. O `extend` transforma a saída de um comando local em valor consultável pela rede.
 
 ## Passo 4: o trap com a medida dentro
 
@@ -102,7 +102,7 @@ snmptrap -v2c -c alertas 172.30.0.161 "" 1.3.6.1.4.1.8072.2.3.0.1 \
 
 A primeira linha guarda o valor numa variável, e a segunda manda esse valor dentro do trap.
 
-Um alerta que chega com a medida dentro poupa uma ida e volta: quem recebe já sabe o número e decide na hora. Um alerta que só diz "algo aconteceu" obriga o gerente a perguntar de volta, e a resposta vem do estado de agora, que pode já ser outro.
+O alerta que chega com a medida dentro poupa uma ida e volta. Quando o aviso traz só o tipo do evento, o gerente precisa perguntar de volta, e a resposta descreve o estado do momento da pergunta, que já pode ser outro.
 
 ## Os 4 itens
 
