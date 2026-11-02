@@ -1,6 +1,6 @@
 # Atividade 10: missão, o plantão automatizado
 
-- Prazo: sexta-feira, 31/10/2026, às 20h
+- Prazo: sexta-feira, 06/11/2026, às 20h
 - Unidade: 2
 - Onde: no seu laboratório e no servidor
 - Acompanhamento: `/atividades atividade:10` no Discord
@@ -12,7 +12,7 @@ As atividades 7, 8 e 9 trouxeram o passo a passo. Esta traz o objetivo, e o cami
 
 Você assumiu o plantão de um servidor. Ele tem três camadas rodando em containers, o front publicado numa porta, e nenhuma delas avisa nada quando cai. O seu antecessor olhava a tela de vez em quando.
 
-Entre o dia da entrega desta atividade e o fechamento, em algum minuto que você não sabe, eu vou derrubar uma camada da sua topologia, como fiz na atividade 5. Você precisa que o sistema perceba sozinho, registre o que aconteceu e avise, sem você estar olhando.
+Entre terça-feira 03/11 às 8h e quinta-feira 05/11 às 20h, em algum minuto que você não sabe, eu vou derrubar uma camada da sua topologia, como fiz na atividade 5. O minuto é sorteado por aluno. Você precisa que o sistema perceba sozinho, registre o que aconteceu e avise, sem você estar olhando.
 
 ## Os 4 objetivos
 
