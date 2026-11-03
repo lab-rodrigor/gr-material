@@ -48,3 +48,14 @@ Três arquivos em `~/aprender/`, dentro do seu laboratório:
 A IA é o Gemini da sua conta institucional. Entre com o endereço `@dcx.ufpb.br`.
 
 O `PROVA.sh` roda dentro do seu laboratório. Containers de apoio vão em uma rede própria, com nome `aprender-<seu slug>`. Não use a topologia da atividade 10: a falha dela entra entre hoje às 8h e quinta às 20h, e o que você mexer lá eu não consigo separar do que eu injetei.
+
+## Esqueleto
+
+Para nao perder tempo com nome de arquivo:
+
+```
+curl -fsSLO https://raw.githubusercontent.com/lab-rodrigor/gr-material/main/aprender-iniciar
+sh aprender-iniciar
+```
+
+Ele cria os quatro arquivos vazios em `~/aprender/` e nao sobrescreve o que voce ja escreveu. Na sua conta do servidor o comando `aprender-iniciar` ja esta instalado, e basta rodar o nome.
