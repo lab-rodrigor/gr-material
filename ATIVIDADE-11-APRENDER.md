@@ -22,7 +22,7 @@ Escreva o `PROVA.sh`, executável, que roda sozinho e imprime a medição pedida
 
 ## Etapa 3: perguntas por DM
 
-Às 11h40 eu mando 3 perguntas por DM. Elas saem do seu `ROTEIRO.md` e dos números que o seu `PROVA.sh` imprimiu, no que estiver commitado nesse horário. Você tem dez minutos para responder.
+Amanhã, quarta 04/11, às 20h, eu mando 3 perguntas por DM. Elas saem do seu `ROTEIRO.md` e dos números que o seu `PROVA.sh` imprimiu, no que estiver commitado nesse horário. Você tem dez minutos para responder.
 
 ## O que eu verifico
 
@@ -56,4 +56,6 @@ git clone https://github.com/lab-rodrigor/aprender-gr-SEU-USUARIO.git aprender
 cd aprender
 ```
 
-Containers de apoio vão em uma rede própria, chamada `aprender-<seu slug>`. Não use a topologia da atividade 10: a falha dela entra entre hoje às 8h e quinta às 20h, e o que você mexer lá eu não consigo separar do que eu injetei.
+Tudo acontece dentro do laboratório, que já tem `tc`, `nft`, `iptables`, `snmpd`, `dig`, `openssl`, `tcpdump`, saída para a internet e `sudo` sem senha. Falta instalar o que o seu assunto pedir, com `apt-get install`.
+
+Não mexa na topologia da atividade 10, que roda na sua conta do servidor: a falha dela entra entre hoje às 8h e quinta às 20h, e o que você alterar lá eu não consigo separar do que eu injetei.
