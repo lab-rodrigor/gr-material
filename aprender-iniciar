@@ -1,0 +1,70 @@
+#!/bin/sh
+# Cria o esqueleto da atividade "CTF de aprendizado" em ~/aprender.
+# Nao sobrescreve arquivo existente. Rode quantas vezes quiser.
+set -e
+d="$HOME/aprender"
+mkdir -p "$d"
+
+novo() {
+  if [ -e "$d/$1" ]; then echo "ja existe: $1"; return; fi
+  cat > "$d/$1"; echo "criado:    $1"
+}
+
+novo ROTEIRO.md <<'TXT'
+# Roteiro
+
+Assunto sorteado (copie da sua DM):
+
+Objetivo, em uma frase:
+
+## Marco 1
+O que eu vou saber fazer:
+Comando que prova:
+
+## Marco 2
+O que eu vou saber fazer:
+Comando que prova:
+
+## Marco 3
+O que eu vou saber fazer:
+Comando que prova:
+TXT
+
+novo PROVA.sh <<'TXT'
+#!/bin/sh
+# Roda sozinho e imprime a medicao que a sua DM pede, antes e depois.
+# Quem corrige executa este arquivo. Ele precisa terminar com status 0.
+set -e
+
+echo "== antes"
+
+echo "== depois"
+TXT
+chmod +x "$d/PROVA.sh" 2>/dev/null || true
+
+novo CONVERSA.md <<'TXT'
+# Conversa com o Gemini
+
+Cole aqui a conversa inteira, da primeira pergunta a ultima resposta.
+Marque quem fala, assim:
+
+## eu
+
+## gemini
+TXT
+
+novo APRENDI.md <<'TXT'
+# O que eu aprendi
+
+Em tres paragrafos, no maximo.
+
+## Onde o modelo errou
+
+O que ele afirmou:
+Onde eu conferi (manual, --help, documentacao oficial):
+O que estava certo:
+TXT
+
+echo
+echo "pronto: $d"
+ls -l "$d"
