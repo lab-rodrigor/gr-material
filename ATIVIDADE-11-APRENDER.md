@@ -1,61 +1,59 @@
-# Atividade: CTF de aprendizado
+# Aprender um assunto novo usando a IA
 
-Você vai aprender um assunto que não vimos em aula, usando a IA como guia de estudo. O assunto foi sorteado para você e está na sua DM. O do seu colega é outro.
+Cada aluno tem um repositório privado, criado pelo servidor, com o assunto sorteado em `SEU-ASSUNTO.md`. O link chegou por DM.
 
-A flag não está na IA. Ela sai do seu ambiente: o corretor roda o que você construiu e, quando a medição aparece, imprime a flag. Nenhum modelo consegue entregar essa string, porque ela depende da sua matrícula e do seu ambiente funcionando.
+Use o Gemini da sua conta `@dcx.ufpb.br` como guia de estudo. Não precisa de chave nem de cartão.
 
-Use o Gemini da sua conta `@dcx.ufpb.br`. Não precisa de chave nem de cartão.
+A atividade tem três etapas, na ordem abaixo.
 
-Parte da nota é o que você aprendeu. Parte é como você usou a IA, e isso eu leio na conversa que você entrega.
+## Etapa 1: roteiro de estudo
 
-## As três flags
+Escreva o `ROTEIRO.md` com:
 
-**Flag 1, roteiro.** Use a IA para montar o `ROTEIRO.md`: o objetivo em uma frase, 3 marcos e, para cada marco, o comando que prova o marco. Comando, não descrição. Se um marco não tem como ser testado, ele não é um marco.
+- o objetivo em uma frase
+- 3 marcos
+- para cada marco, o comando que prova o marco
 
-**Flag 2, prova técnica.** Escreva o `PROVA.sh`, executável, que roda sozinho e imprime a medição que a sua DM pede, antes e depois. O corretor executa o seu script no seu ambiente. Saída zero e as duas medições liberam a flag.
+Marco sem comando que o prove não conta.
 
-**Flag 3, prova sem IA.** Às 11h40, eu mando 3 perguntas por DM. Elas saem do seu próprio `ROTEIRO.md` e dos números que o seu `PROVA.sh` imprimiu. Nenhuma IA responde por você, porque nenhuma IA viu o seu ambiente. Dez minutos para responder.
+## Etapa 2: prova no seu ambiente
 
-## Como eu avalio o uso da IA
+Escreva o `PROVA.sh`, executável, que roda sozinho e imprime a medição pedida em `SEU-ASSUNTO.md`, antes e depois. Eu executo esse arquivo dentro do seu laboratório. Ele precisa terminar com status 0.
 
-Você entrega a conversa inteira em `CONVERSA.md`, pergunta e resposta, da primeira à última. Eu procuro 4 coisas nela e no `APRENDI.md`:
+## Etapa 3: perguntas por DM
 
-- você pediu plano e exercício, em vez de resposta pronta
-- você mandou a sua própria tentativa para ser corrigida, pelo menos uma vez
-- você conferiu alguma afirmação do modelo contra fonte primária: manual, `--help`, documentação oficial
-- você achou uma afirmação errada ou desatualizada do modelo, e registrou qual, com o comando ou a página que mostrou o erro
+Às 11h40 eu mando 3 perguntas por DM. Elas saem do seu `ROTEIRO.md` e dos números que o seu `PROVA.sh` imprimiu, no que estiver commitado nesse horário. Você tem dez minutos para responder.
 
-O último item vale ponto e costuma acontecer. Os assuntos do sorteio foram escolhidos em pontos onde os modelos respondem com a ferramenta antiga ou com o padrão de uma versão que já mudou.
+## O que eu verifico
+
+- `ROTEIRO.md` com 3 marcos e um comando por marco
+- `PROVA.sh` terminando com status 0 e imprimindo as duas medições
+- `CONVERSA.md` com a conversa inteira: pergunta e resposta, da primeira à última
+- `APRENDI.md` com o que você aprendeu, uma afirmação errada ou desatualizada do Gemini, e o comando ou a página oficial que mostrou o erro
+- commits ao longo do trabalho
+- as respostas das 3 perguntas
+
+Pesos: roteiro 20, prova 30, perguntas 30, conversa e `APRENDI.md` 20.
+
+## Como usar a IA aqui
+
+Peça plano de estudo, explicação e exercício. Mande a sua tentativa para ser corrigida. Confira no manual, no `--help` ou na documentação oficial o que o modelo afirmar.
+
+Os assuntos foram escolhidos em pontos onde os modelos respondem com a ferramenta antiga ou com o padrão de uma versão que já mudou. Achar um desses erros e provar que é erro vale ponto no `APRENDI.md`.
+
+Resposta pronta colada no `PROVA.sh` trava na etapa 3, porque as perguntas vêm dos seus próprios números.
 
 ## Entrega
 
-Três arquivos em `~/aprender/`, dentro do seu laboratório:
-
-- `ROTEIRO.md`
-- `PROVA.sh`, executável
-- `CONVERSA.md`: a conversa inteira com o Gemini, colada
-- `APRENDI.md`: o que você aprendeu, o erro que você achou no modelo, e como você provou que era erro
-
-## Regras
-
-- Conversa sem a sua condução não vale nota. Pedir explicação, exercício e correção da sua tentativa vale.
-- Conversa que não corresponde ao que está no seu `PROVA.sh` eu trato como entrega de outra pessoa.
-- Assunto de colega não serve. O corretor confere o seu contra a sua matrícula.
-- Prazo das flags 1 e 2: hoje, até 23h59. Unidade 3.
+Commit e push neste repositório, que é só seu. Prazo das etapas 1 e 2: hoje, até 23h59. Unidade 3.
 
 ## Ambiente
 
-A IA é o Gemini da sua conta institucional. Entre com o endereço `@dcx.ufpb.br`.
-
-O `PROVA.sh` roda dentro do seu laboratório. Containers de apoio vão em uma rede própria, com nome `aprender-<seu slug>`. Não use a topologia da atividade 10: a falha dela entra entre hoje às 8h e quinta às 20h, e o que você mexer lá eu não consigo separar do que eu injetei.
-
-## Esqueleto
-
-Para nao perder tempo com nome de arquivo:
+Clone o repositório dentro do seu laboratório, em `~/aprender`, e trabalhe lá.
 
 ```
-curl -fsSLO https://raw.githubusercontent.com/lab-rodrigor/gr-material/main/aprender-iniciar
-sh aprender-iniciar
+git clone https://github.com/lab-rodrigor/aprender-gr-SEU-USUARIO.git aprender
+cd aprender
 ```
 
-Ele cria os quatro arquivos vazios em `~/aprender/` e nao sobrescreve o que voce ja escreveu. Na sua conta do servidor o comando `aprender-iniciar` ja esta instalado, e basta rodar o nome.
+Containers de apoio vão em uma rede própria, chamada `aprender-<seu slug>`. Não use a topologia da atividade 10: a falha dela entra entre hoje às 8h e quinta às 20h, e o que você mexer lá eu não consigo separar do que eu injetei.
