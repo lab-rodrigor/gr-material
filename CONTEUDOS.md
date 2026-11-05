@@ -1,369 +1,210 @@
-# Tópicos e comandos de Gerência de Redes 2026.2, até 05/11/2026
+# Conteúdos de formação de Gerência de Redes 2026.2, até 05/11/2026
 
-Lista do que a turma executou, por tópico. A referência entre parênteses é a
-atividade em que o item apareceu. Comando citado aqui é comando que está no
-enunciado, no corretor ou na correção automática.
+O que o aluno aprendeu, por área, com o comando que exercitou cada item.
+Ficaram de fora as regras de operação da disciplina: portas e endereços do
+laboratório, limites usados na correção, scripts do servidor e pontuação das
+atividades.
 
-## 1. Acesso e operação do servidor Linux
+## 1. Operação de um servidor Linux
 
-### 1.1 Acesso por SSH (atividade 1)
+- Acesso por SSH com chave, com a chave privada em modo 600.
+- Geração de par de chaves com `ssh-keygen -t ed25519`.
+- Inventário do que está em escuta com `ss -lntup`, e o processo por trás da
+  porta com `ps aux`.
+- Remoção de serviço desnecessário, com `systemctl stop`, `systemctl disable` e
+  `apt purge`.
+- Atualização de pacotes, com a diferença entre `apt update` e `apt upgrade`, e
+  simulação por `apt-get -s upgrade`.
+- Atualização automática com `unattended-upgrades`.
+- Auditoria de contas em `/etc/passwd`, `/etc/sudoers.d/` e `lastlog`, com
+  remoção de conta indevida.
+- Superfície de exposição, segurança por obscuridade, rastreabilidade por conta
+  nominal e a janela entre a publicação de uma correção e a aplicação dela.
 
-- `ssh -i <chave> -p <porta> aluno@gr.lab.ayty.org`, com a chave em modo 600.
-- Porta do host traduzida para o container: `SUA_PORTA` para a 22 e
-  `SUA_PORTA+100` para a 2222.
-- `scp` e `ssh-keygen -t ed25519` para gerar par próprio.
+## 2. Endurecimento de serviço
 
-### 1.2 Inventário do que está no ar (atividade 1)
+- Configuração efetiva do sshd lida com `sshd -T`, em vez do arquivo.
+- `PermitRootLogin`, `PasswordAuthentication`, `MaxAuthTries`, `LoginGraceTime`,
+  `AllowTcpForwarding` e troca da porta de escuta.
+- Ordem de operação que evita perder o acesso: liberar antes de restringir, e
+  manter uma sessão aberta ao reiniciar o sshd.
+- Firewall com `ufw`: política padrão, regra por porta e protocolo, e
+  `ufw status verbose`.
+- Abertura restrita a uma faixa de rede, em vez de abertura geral.
+- `fail2ban` com filter, jail e action, e os parâmetros `maxretry`, `findtime` e
+  `bantime`.
+- Leitura de `/var/log/auth.log` como fonte do filtro, e verificação do
+  banimento com `fail2ban-client status sshd`.
+- Teste do próprio bloqueio, atacando o serviço a partir de outra máquina.
 
-- `ss -lntup` para portas em escuta, com processo e usuário.
-- `ps aux` para o processo por trás da porta.
-- `systemctl stop`, `systemctl disable`, `apt purge` para remover `rpcbind` (111)
-  e `vsftpd` (21).
+## 3. Containers e topologia de aplicação
 
-### 1.3 Configuração do sshd (atividade 1)
+- Aplicação dividida em camadas, uma por container: banco, API e front.
+- Publicação de porta e a diferença entre porta publicada e porta exposta.
+- Rede interna sem rota para a internet, e resolução de nome entre containers.
+- Menor privilégio aplicado à topologia: a camada que não precisa falar com o
+  banco fica fora da rede dele.
+- Volume nomeado, com o ciclo de vida dos dados separado do container.
+- Configuração por variável de ambiente.
+- Diagnóstico por log e por inspeção do container, com o 502 do proxy lido como
+  nome não resolvido.
+- Senha gravada no volume na primeira inicialização do banco, e o erro de
+  autenticação que aparece quando a senha muda depois.
 
-- `sshd -T` para ler a configuração efetiva, em vez do arquivo.
-- Diretivas: `PermitRootLogin`, `PasswordAuthentication`, `MaxAuthTries` até 3,
-  `LoginGraceTime` até 60, `AllowTcpForwarding no`, `Port 2222`.
-- `systemctl restart ssh` com sessão aberta em paralelo, para não se trancar fora.
+## 4. Entrega automatizada
 
-### 1.4 Atualização de pacotes (atividade 1)
+- Pipeline disparado por push na branch principal, e disparo manual.
+- Segredo guardado fora do repositório, com o valor injetado no pipeline.
+- Chave SSH presa a um comando, que executa só a operação de deploy.
+- Deploy idempotente: derrubar antes de criar, tratar o recurso ausente e
+  preservar o volume de dados.
+- Versão em produção ligada ao commit que a gerou.
+- Leitura da execução do pipeline para achar o passo que falhou.
 
-- `apt update` contra `apt upgrade`, e `apt-get -s upgrade` para simular.
-- `/var/lib/apt/lists/` como prova de que as listas foram baixadas.
-- `unattended-upgrades` e `/etc/apt/apt.conf.d/20auto-upgrades`, com
-  `Unattended-Upgrade "1"`.
+## 5. Captura e análise de tráfego
 
-### 1.5 Firewall (atividades 1, 7, 8, 9)
-
-- `ufw allow`, `ufw enable`, `ufw status verbose`, com a regra de SSH liberada
-  antes de ativar.
-- Porta aberta por atividade: 161/udp para o agente SNMP, saída 162/udp para o
-  trap, 9116/tcp para o exportador, cada uma restrita à rede `172.30.0.0/16`.
-
-### 1.6 fail2ban (atividade 1)
-
-- Conceitos de filter, jail e action.
-- Parâmetros `maxretry`, `findtime` e `bantime`.
-- `fail2ban-client status sshd`, com `Total banned` maior que zero.
-- `/var/log/auth.log` como fonte do filtro.
-- Ataque ao próprio serviço a partir de outro laboratório, para provocar o ban.
-
-### 1.7 Servidor web (atividade 1)
-
-- `nginx` servindo `/var/www/html/index.html` próprio.
-- `curl -I localhost` e leitura do cabeçalho `Server:`.
-
-### 1.8 Contas e privilégio (atividade 1)
-
-- `/etc/passwd` filtrado por UID maior ou igual a 1000.
-- `/etc/sudoers.d/` e remoção da conta `suporte` com o sudoers dela.
-- `lastlog` para último acesso por conta.
-
-## 2. Containers e topologia
-
-### 2.1 Ciclo de vida (atividades 2, 3, 5, 6, 10)
-
-- `gr-docker run`, `ps`, `logs`, `inspect`, `stop`, `start`, que é o wrapper
-  com o qual o aluno opera sem acesso ao daemon.
-- Imagens usadas: `postgres:17-alpine`, `gr-atv2-api:1`, `gr-atv2-front:1`,
-  `louislam/uptime-kuma:1`.
-
-### 2.2 Portas (atividade 2)
-
-- Publicação com `-p`, e a diferença entre porta publicada e porta exposta.
-- Leitura de `0.0.0.0:` na coluna PORTS do `ps`.
-- Front com porta publicada na faixa do aluno, API e banco sem porta publicada.
-
-### 2.3 Redes (atividade 2)
-
-- Rede `web` e rede `dados`, a segunda criada como interna, sem rota para fora.
-- Resolução de nome entre containers pela rede.
-- API nas duas redes e front fora da rede do banco, que é menor privilégio
-  aplicado à topologia.
-- `Internal` no `inspect` como prova do isolamento.
-
-### 2.4 Dados (atividades 2, 3)
-
-- Volume nomeado montado em `/var/lib/postgresql/data`.
-- Volume preservado entre deploys, e bind mount recusado pelo `gr-docker`.
-- Variáveis `POSTGRES_HOST`, `POSTGRES_DB`, `POSTGRES_PASSWORD` e `API`.
-- Senha do Postgres gravada no volume na primeira subida, com
-  `password authentication failed` como sintoma de senha trocada depois.
-
-### 2.5 Diagnóstico (atividades 2, 5)
-
-- 502 do nginx lido como nome não resolvido.
-- Assinatura de sintoma por camada, descrita no tópico 8.
-
-## 3. Entrega automatizada
-
-### 3.1 GitHub Actions (atividade 3)
-
-- `on: push` na `main` e `workflow_dispatch`.
-- Bloco `env:` e leitura da aba Actions para depurar passo vermelho.
-- No mínimo duas execuções verdes, com a última verde no fechamento.
-
-### 3.2 Segredos e chave de entrega (atividade 3)
-
-- Secrets `DEPLOY_KEY` e `DB_SENHA` no repositório.
-- Chave SSH presa a um comando, que executa `gr-docker` e recusa shell.
-- Nenhuma chave privada no histórico do git.
-
-### 3.3 Deploy idempotente (atividades 3, 5)
-
-- Derrubar antes de criar, tratar o recurso ausente e preservar o volume.
-- `DEPLOY_SHA=${{ github.sha }}` no container do front, conferido contra o
-  último commit da `main`.
-- Conserto por push com `DEPLOY_SHA` novo, ou por `~/consertar.sh` com os três
-  `gr-docker run`.
-
-## 4. Captura e análise de tráfego
-
-### 4.1 tcpdump (atividade 4)
-
-- Interface e formato: `-i any`, `-i lo`, `-n`, `-nn`, `-A`, `-X`.
-- Arquivo: `-w ~/capturas/<nome>.pcap` e `-r` para reler.
-- Filtros por porta, por protocolo e por negação, como `not port 22`.
-- Captura em segundo plano, com filtro na captura para não encher o disco.
-
-### 4.2 Leitura de pacote (atividade 4)
-
-- Aperto de mão completo em `[S]`, `[S.]` e `[.]`.
-- `[S]` seguido de `[R]` como porta fechada, usado para achar a porta de destino.
+- `tcpdump` com `-i any`, `-n`, `-nn`, `-A`, `-X`, `-w` e `-r`.
+- Filtro por porta, por protocolo e por negação, e por que filtrar na captura.
+- Aperto de mão TCP em `[S]`, `[S.]` e `[.]`, e porta fechada em `[S]` seguido
+  de `[R]`.
+- HTTP em texto puro, com cabeçalho e corpo legíveis, e o mesmo risco para token
+  e cookie sem TLS.
+- Consulta DNS na porta 53, com o nome perguntado visível antes de qualquer
+  conexão cifrada.
 - ICMP sem porta, com dado no payload.
-- Consulta DNS na 53, com o nome perguntado visível.
-- HTTP em texto puro, com cabeçalho e corpo legíveis.
-- SNI em claro no ClientHello, antes da cifra.
-- O que a cifra esconde e o que continua visível: destino, tamanho e tempo.
+- SNI em claro no ClientHello, e a distinção entre o que a cifra esconde e o que
+  continua visível: destino, tamanho e tempo.
+- Remontagem de fluxo TCP, com Follow TCP Stream, quando o valor vem partido em
+  dois pacotes.
+- Interface de captura: por que `-i eth0` perde o tráfego que passa por `lo`.
+- Filtro BPF para isolar um sintoma dentro de uma captura.
 
-### 4.3 Wireshark (atividade 4 e seminário 4)
+## 6. SNMP: consulta
 
-- Follow TCP Stream para remontar valor partido em dois pacotes.
-
-## 5. SNMP, do gerente para o agente
-
-### 5.1 Modelo (atividade 7)
-
-- Papéis de agente e gerente, consulta por UDP na 161, sem conexão estabelecida,
+- Papéis de agente e de gerente, e consulta por UDP sem conexão estabelecida,
   com tempo de espera e repetição.
-- Árvore `1.3.6.1`, ramos `mgmt` e `private`, MIB-2 da RFC 1213, ramo
-  `enterprises` por fabricante.
-- Objeto e instância: `.0` para instância única, índice da linha em tabela.
-- Tipos `STRING`, `INTEGER` com rótulo, `Gauge32`, `Counter32` e `Timeticks`.
+- OID e MIB: a árvore, os ramos de padrão e de fabricante, e a tradução de
+  número para nome pelos arquivos de MIB.
+- Objeto e instância, com `.0` para instância única e índice para linha de
+  tabela.
+- Tipos de valor: `STRING`, `INTEGER` com rótulo, `Gauge32`, `Counter32` e
+  `Timeticks`.
+- `snmpget`, `snmpwalk`, `snmptable` e `snmptranslate -On`.
+- Tabela de interfaces da `IF-MIB`, com descrição, estado administrativo, estado
+  operacional e contadores de entrada e saída.
+- Cálculo de taxa a partir de duas leituras de um contador, dividido pelo
+  intervalo.
+- Estouro do contador de 32 bits, o contador de 64 bits e o descarte da
+  diferença negativa depois de um reinício.
+- Configuração do próprio agente: endereço de escuta, community restrita a uma
+  rede e identificação do equipamento.
+- Versões v1, v2c e v3, com os níveis `noAuthNoPriv`, `authNoPriv` e `authPriv`.
+- Criação de usuário v3 com autenticação SHA e cifra AES.
+- Community da v2c visível em captura, e a mesma consulta ilegível na v3.
+- Diagnóstico: `Timeout: No Response`, porta de escuta e MIB ausente.
 
-### 5.2 Consulta (atividades 7, 9 e teste de 13/10)
+## 7. SNMP: notificação e métrica própria
 
-- `snmpget -v2c -c <community> <alvo> sysDescr.0`
-- `snmpwalk` sobre um ramo inteiro.
-- `snmptable -Cb IF-MIB::ifTable`, com Index, Descr, Type, Mtu, Speed,
-  AdminStatus, OperStatus, InOctets e OutOctets.
-- `snmptranslate -On` para o OID numérico de um nome.
-- Objetos cobrados no teste: `sysContact.0`, `sysServices.0`, `ifNumber.0`,
-  `ifSpeed.1`, `ifSpeed.2`, `ifType.2`, `ifMtu.1`.
-
-### 5.3 Contadores e taxa (atividade 7)
-
-- Duas leituras de `ifInOctets.2` e a diferença dividida pelo intervalo.
-- Estouro do contador de 32 bits e o `ifHCInOctets` de 64 bits.
-- Diferença negativa descartada depois de reinício do agente.
-
-### 5.4 Agente próprio (atividade 7)
-
-- `/etc/snmp/snmpd.conf` com `agentaddress`, `rocommunity` restrita a
-  `172.30.0.0/16` e `sysLocation` igual ao slug do aluno.
-- `snmpd -Lf /dev/null` para subir em primeiro plano.
-- `net-snmp-create-v3-user -ro -A <senha> -a SHA-512 -X <senha> -x AES aluno`.
-- Níveis `noAuthNoPriv`, `authNoPriv` e `authPriv`.
-
-### 5.5 Diagnóstico (atividade 7)
-
-- `Timeout: No Response` como agente fora do ar ou porta fechada.
-- `ss -lnup | grep 161` para confirmar a escuta.
-- Linha `mibs :` em `/etc/snmp/snmp.conf` quando o nome não traduz.
-- `tcpdump -i any -n -A udp port 161` mostrando a community da v2c em claro.
-
-## 6. SNMP, do agente para o gerente
-
-### 6.1 Notificação (atividade 8)
-
-- `snmptrap -v2c -c alertas <receptor>:162 '' 1.3.6.1.4.1.8072.2.3.0.1 <OID> s <valor>`
-- Varbind em três partes: OID, tipo e valor.
-- Trap da v1 e `inform` da v2c, com confirmação de entrega no segundo.
-- Conteúdo obrigatório da v2c: `sysUpTime.0` e `snmpTrapOID.0`.
-- Notificações padrão `coldStart`, `linkDown` e `linkUp`.
-- `trap2sink` no `snmpd.conf`, com o `coldStart` saindo na subida do agente.
-- Limites: entrega sem confirmação e enxurrada em interface que oscila.
-
-### 6.2 Métrica própria (atividade 8)
-
-- Diretiva `extend` ligando um comando local a um OID.
-- Leitura em `nsExtendOutputFull`, `nsExtendOutLine` e `nsExtendResult`.
-- Métrica verificada contra `ps -e | wc -l` rodado no laboratório, com folga de 5.
+- Notificação saindo do agente para o receptor, em porta separada da consulta.
+- Trap da v1 e `inform` da v2c, com a diferença na confirmação de entrega.
+- Conteúdo de uma notificação: tempo de atividade, identificador do evento e
+  varbinds escolhidos por quem envia.
+- Notificações padrão de partida e de mudança de estado de interface.
+- Envio manual com `snmptrap`, com o varbind em OID, tipo e valor.
+- Notificação automática na subida do agente, configurada no arquivo do serviço.
+- Limites da notificação: entrega sem confirmação e enxurrada de avisos quando a
+  interface oscila.
+- Métrica própria publicada por `extend`, ligando um comando local a um OID.
 - Custo de comando lento dentro da consulta.
+- Varredura e notificação usadas juntas, com o atraso de descoberta de cada uma.
 
-## 7. Métricas, séries e painéis
+## 8. Métricas, séries temporais e painéis
 
-### 7.1 Exportador (atividade 9)
+- Modelo de coleta por exportador: o alvo expõe, o coletor busca em intervalo
+  fixo e guarda a série.
+- Exportador que traduz SNMP para o formato de exposição do coletor.
+- Arquivo de módulos do exportador, gerado a partir das MIBs, com o ramo a
+  percorrer e a credencial de consulta.
+- Formato de exposição com rótulos por interface.
+- Consulta à série temporal para saber se o alvo está sendo coletado e quantos
+  pontos existem na janela.
+- Painel com entrada e saída por interface, estado operacional e tempo de
+  resposta do agente.
+- Por que a taxa só aparece com pelo menos duas amostras.
+- Regra de alerta com `for`, e os estados `inactive`, `pending` e `firing`.
 
-- `prometheus-snmp-exporter` escutando na 9116, com `--config.file`.
-- `snmp.yml` da v0.21.0, gerado a partir das MIBs, com módulo por tipo de
-  equipamento.
-- Módulo `if_mib` com `auth.community` e `walk: 1.3.6.1.2.1.2`.
-- `curl 'localhost:9116/snmp?target=127.0.0.1&module=if_mib'` devolvendo série.
-- Formato de exposição:
-  `ifHCInOctets{ifAlias="",ifDescr="eth0",ifIndex="2"} 12345`.
+## 9. Monitoração de disponibilidade
 
-### 7.2 Prometheus (atividades 9, 10)
+- Monitor escrito pelo próprio aluno, com uma linha por verificação, instante em
+  ISO com fuso e o código de resposta de cada camada.
+- Código reservado para ausência de resposta, distinto de um erro do servidor.
+- Processo que sobrevive ao fim da sessão: `nohup`, cron ou unit do systemd.
+- Ferramenta pronta de monitoração, com monitor de requisição e monitor de
+  palavra-chave na resposta.
+- Intervalo de checagem e número de tentativas antes de declarar fora do ar.
+- Atraso do alerta igual ao intervalo mais as tentativas, e o custo em
+  requisições de encurtar esse atraso.
+- Endereço público no monitor, porque `localhost` dentro do container do monitor
+  é ele mesmo.
+- Histórico de batimentos como prova de queda e de volta.
 
-- Coleta por HTTP a cada 30 segundos, com alvo refeito de hora em hora pelo
-  `gr-prom-alvos`.
-- `up{job="snmp-gr", aluno="<slug>"}` valendo 1.
-- `count_over_time(ifHCInOctets{turma="gr", aluno="<slug>"}[10m])` com 2 pontos
-  na atividade 9, e `[1h]` com 50 pontos na atividade 10.
+## 10. Resposta a incidente
 
-### 7.3 Grafana (atividade 9)
-
-- Painel "Redes 2026.2: interfaces por SNMP" em `otel.lab.ayty.org`.
-- Entrada e saída por interface, estado operacional e tempo de resposta.
-- Taxa só aparece com duas amostras, o que obriga a gerar tráfego.
-
-### 7.4 Regra de alerta (atividade 11, assunto `alerta`)
-
-- Cláusula `for` no arquivo de regras.
-- Estados `inactive`, `pending` e `firing`, com o horário de cada transição.
-- Avaliação periódica contra o tempo do `for`.
-
-## 8. Disponibilidade e resposta a incidente
-
-### 8.1 Monitor escrito pelo aluno (atividade 5)
-
-- Uma linha por minuto, com instante ISO com fuso e os códigos de `/` e
-  `/api/pokemons`, usando `000` para ausência de resposta.
-- Arquivo `~/monitor.log` ou `~/sonda.log`, com no mínimo 60 linhas em 2 horas.
-- Processo que sobrevive à sessão: `nohup`, `cron` ou unit do systemd.
-
-### 8.2 Uptime Kuma (atividade 6)
-
-- Container com volume em `/app/data`, guardando o SQLite.
-- Monitor HTTP(s) na raiz e monitor Keyword na listagem.
-- Intervalo de 60 segundos e número de tentativas antes de marcar fora do ar.
-- Atraso do alerta igual ao intervalo mais as tentativas.
-- Endereço público no monitor, porque `localhost` dentro do container é ele mesmo.
-- Tabelas `monitor` e `heartbeat`, com a sequência status 0 e depois status 1.
-
-### 8.3 Falha injetada (atividades 5, 10)
-
-- Catálogo: parar o banco, `pause` no banco, desconectar o banco da rede
-  interna, parar a API, parar o front.
-- Minuto sorteado por aluno dentro de uma janela anunciada.
-
-### 8.4 Diagnóstico por sintoma (atividade 5)
-
-- `200/500` aponta a camada do banco.
-- `200/000` aponta a camada da API.
-- `000/000` aponta a camada do front.
+- Diagnóstico pela assinatura do sintoma, com o par de códigos de duas camadas
+  apontando qual delas caiu.
 - Investigar antes de consertar, porque o conserto apaga o sintoma.
+- Captura do momento da falha, filtrada pela porta do serviço.
+- Registro do incidente com hora da falha, camada, hora da percepção, hora do
+  conserto e ação tomada.
+- Conserto reproduzível, por pipeline ou por script, em vez de comando manual.
+- Detecção automática: o sistema percebe a queda e avisa sozinho, com a camada
+  identificada no aviso.
+- Diferença entre o aviso que sai do sistema e o aviso mandado por uma pessoa.
 
-### 8.5 Registro do incidente (atividades 5, 10)
+## 11. Assuntos de estudo individual, sorteados na atividade de aprender com IA
 
-- Laudo da atividade 5 com `camada`, `hora`, `sintoma` e `acao`.
-- `~/incidente.md` da atividade 10 com `falha`, `camada`, `percebido`,
-  `consertado` e `acao`, nessa ordem de tempo.
-- Hora conferida contra a injeção real, com 10 minutos de folga.
-
-### 8.6 Plantão automatizado (atividade 10)
-
-- Detecção sem o aluno olhando, por qualquer caminho: métrica com `extend`,
-  script que dispara `snmptrap`, Kuma com notificação ou coletor em Python.
-- Aviso no receptor em até 5 minutos, com o nome da camada no corpo.
-- Aviso enviado à mão não conta.
-
-## 9. Assuntos sorteados da atividade 11
-
-Cada aluno recebeu um assunto e a medição que precisa produzir. A ferramenta
-central de cada um está na segunda coluna.
-
-| Assunto | Ferramenta e medição |
+| Assunto | O que o aluno precisa demonstrar |
 |---|---|
-| Latência e perda com tc/netem | `tc qdisc add dev <if> root netem delay 100ms loss 10%`, com RTT e perda medidos por `ping` ou `iperf3` antes e depois |
-| NAT de saída com nftables | `nft` com tabela de NAT, e o endereço traduzido visto no `tcpdump` |
-| SNMPv3 em authPriv | `snmpget -v3 -l authPriv`, com a mesma consulta falhando sem credencial |
-| Zona DNS autoritativa com reversa | `dig @127.0.0.1 <zona> SOA +noall +comments +answer` e `dig -x <ip>`, com `AA` na resposta |
-| Certificado próprio, SNI e cadeia | `openssl s_client -connect -servername`, com e sem a CA no truststore |
+| Latência e perda controladas com tc/netem | RTT e perda antes e depois, com `ping` ou `iperf3` |
+| NAT de saída com nftables | o pacote saindo com o endereço traduzido, no `tcpdump` |
+| SNMPv3 com autenticação e privacidade | a mesma consulta falhando sem credencial e respondendo com ela |
+| Zona DNS autoritativa própria, com reversa | `dig` direto e reverso respondendo com `AA`, e o SOA da zona |
+| Certificado próprio, SNI e validação de cadeia | `openssl s_client` com e sem a CA no truststore |
 | Syslog remoto com retenção | mensagem gerada em um container aparecendo no coletor, com data |
 | Alerta no Prometheus com `for` | o alerta em `pending` e depois em `firing`, com horário |
 | Filtro BPF que isola um sintoma | contagem de pacotes com e sem o filtro, no mesmo pcap |
-| Túnel WireGuard entre dois containers | `wg genkey`, `wg pubkey`, `ip link add wg0 type wireguard`, `wg set`, com ping dentro do túnel e o tráfego cifrado visto fora |
-| Throughput sob concorrência | `iperf3 -s` e `iperf3 -c -P 2`, com a banda de um fluxo e de dois |
+| Túnel WireGuard entre dois containers | ping dentro do túnel e o tráfego cifrado visto fora dele |
+| Throughput sob concorrência com iperf3 | banda de um fluxo sozinho e dividida entre dois |
 
-## 10. Git e GitHub
+## 12. Estudo guiado por modelo de linguagem
 
-- Clone por SSH de repositório privado da organização `lab-rodrigor`, com chave
-  cadastrada na conta do aluno (atividades 3 e 11).
-- Repositório por aluno, criado a partir de template, com convite de
-  colaborador (atividade 11).
-- Commits ao longo do trabalho, usados como evidência de processo.
-- Pull request de feedback nas atividades em formato de sala.
-
-## 11. Estudo guiado por modelo de linguagem (atividade 11)
-
-- `ROTEIRO.md` com objetivo em uma frase, 3 marcos e o comando que prova cada um.
-- `PROVA.sh` executável, terminando em status 0, imprimindo a medição antes e
-  depois.
-- `CONVERSA.md` com o registro da conversa, e `APRENDI.md` com o erro encontrado.
+- Roteiro de estudo com objetivo em uma frase, marcos e o comando que prova cada
+  marco.
+- Script que demonstra a medição antes e depois, com saída guardada.
 - Verificação do que o modelo afirma contra o manual, o `--help` e a
   documentação oficial.
-- Prova oral por escrito: 3 perguntas sobre o material do próprio aluno,
-  respondidas por DM, sem consulta.
+- Registro do erro encontrado, com a fonte que o desmente.
+- Os assuntos foram escolhidos em pontos onde os modelos respondem com a
+  ferramenta antiga ou com um padrão que já mudou.
 
-## 13. Tecnologias trabalhadas
+## 13. Tecnologias usadas na formação
 
-| Tecnologia | Versão ou pacote | Onde apareceu |
-|---|---|---|
-| Debian | bookworm, no container de laboratório | todas |
-| OpenSSH | `sshd`, chave ed25519 | atividades 1, 3, 11 |
-| ufw | política padrão e faixa por atividade | 1, 7, 8, 9 |
-| fail2ban | jail `sshd` | 1 |
-| nginx | página própria e papel de front | 1, 2 |
-| APT e unattended-upgrades | `20auto-upgrades` | 1 |
-| Docker | pelo wrapper `gr-docker`, rede e volume | 2, 3, 5, 6, 10 |
-| PostgreSQL | `postgres:17-alpine` | 2, 3 |
-| GitHub Actions | workflow no repositório do aluno | 3 |
-| Git e GitHub | organização `lab-rodrigor`, repositório por aluno | 3, 11 |
-| tcpdump | captura e leitura de pcap | 4, 5, 7, 11 |
-| Wireshark | Follow TCP Stream | 4 e seminário 4 |
-| Net-SNMP | `snmpd`, `snmpget`, `snmpwalk`, `snmptable`, `snmptrap`, `snmptranslate` | 7, 8, 10 |
-| snmptrapd | receptor de traps do servidor | 8, 10 |
-| prometheus-snmp-exporter | v0.21.0, porta 9116 | 9, 10 |
-| Prometheus | coleta, PromQL, regra com `for` | 9, 10, 11 |
-| Grafana | painel em `otel.lab.ayty.org` | 9 |
-| Uptime Kuma | `louislam/uptime-kuma:1`, SQLite em `/app/data` | 6 |
-| systemd, cron e nohup | processo que sobrevive à sessão | 5 |
-| tc e netem | controle de latência e perda | 11 |
-| nftables | NAT de saída | 11 |
-| BIND | zona autoritativa com reversa | 11 |
-| OpenSSL | certificado próprio, SNI e cadeia | 11 |
-| syslog e journald | log remoto com retenção | 11 e seminário 5 |
-| BPF | filtro de captura | 11 |
-| WireGuard | túnel entre dois containers | 11 |
-| iperf3 | throughput e concorrência | 11 |
-| Zabbix | só no seminário 7 | nenhuma atividade |
-| Gemini | guia de estudo da conta `@dcx.ufpb.br` | 11 |
-| Discord | prova por DM e canal por atividade | 11 e avisos |
-
-## 12. Seminários
-
-| # | Tema | Data |
-|---|---|---|
-| 1 | Linux básico | 08/09 |
-| 2 | Docker básico | 10/09 |
-| 3 | Pipeline e GitHub Actions | 15/09 |
-| 4 | Análise de tráfego com tcpdump e Wireshark | 24/09 |
-| 5 | Logs centralizados: syslog, journald, retenção | 29/09 |
-| 6 | SNMP: agente, MIB, OID, v2c e v3 | 06/10 |
-| 7 | Monitoramento com Zabbix | 13/10 |
-| 8 | Prometheus e Grafana | 03/11 |
-
-Marcados: proxy reverso e TLS em 10/11, backup e restauração em 17/11, Ansible
-em 24/11. Nenhum dos três apareceu em atividade até aqui.
+| Tecnologia | Para quê |
+|---|---|
+| Debian e utilitários de linha de comando | operação do servidor |
+| OpenSSH | acesso por chave e endurecimento do serviço |
+| ufw | firewall de host |
+| fail2ban | bloqueio por tentativa repetida |
+| nginx | serviço web e proxy da topologia |
+| APT e unattended-upgrades | atualização de pacotes |
+| Docker | camadas em containers, rede e volume |
+| PostgreSQL | banco da topologia de três camadas |
+| GitHub Actions | pipeline de entrega |
+| tcpdump e Wireshark | captura e análise de tráfego |
+| Net-SNMP | agente, consulta, notificação e métrica própria |
+| Prometheus e exportador SNMP | coleta e série temporal |
+| Grafana | painel das métricas |
+| Uptime Kuma | monitoração de disponibilidade |
+| systemd, cron e nohup | processo que sobrevive à sessão |
+| tc e netem, nftables, BIND, OpenSSL, syslog, BPF, WireGuard e iperf3 | assuntos de estudo individual |
+| Gemini | guia de estudo da conta institucional |
