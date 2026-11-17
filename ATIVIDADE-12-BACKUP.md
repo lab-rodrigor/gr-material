@@ -1,6 +1,8 @@
 # Atividade 12: backup do banco de dados
 
-- Prazo: sexta-feira, 20/11, às 20h.
+- Preparação: até quinta-feira, 19/11, às 8h.
+- Ataque: num minuto sorteado entre quinta, 19/11, às 8h, e sábado, 21/11, às 22h.
+- Prazo: segunda-feira, 23/11, às 20h.
 - Entrega: este repositório, com commit e push até o prazo.
 - Material de apoio: [Backup de banco de dados](https://github.com/lab-rodrigor/gr-material/blob/main/BACKUP.md).
 
@@ -16,8 +18,9 @@ tabela `registros` do banco `escriba`, com intervalo sorteado de 1 a 10 minutos
 entre uma linha e a próxima. Cada linha tem um número de sequência e o hash da
 linha anterior.
 
-Na quinta-feira, 19/11, entre 8h e 20h, num minuto sorteado para você, o banco é
-sequestrado. O conteúdo de `registros` é cifrado, a tabela é renomeada para
+Entre quinta-feira, 19/11, e sábado, 21/11, num minuto sorteado para você, sempre
+entre 8h e 22h, o banco é sequestrado. O dia não é anunciado: o backup precisa
+estar rodando sozinho desde quinta às 8h. O conteúdo de `registros` é cifrado, a tabela é renomeada para
 `registros_sequestrados`, e aparece uma tabela `resgate` com um bilhete. No mesmo
 minuto, toda cópia de banco guardada no seu laboratório também é cifrada e o
 original é apagado: arquivos `.dump`, `.pgdump`, `.backup`, `.sql`, `.sql.gz`,
@@ -32,7 +35,8 @@ volta a conseguir quando você restaurar a tabela.
 1. Monte um backup automático do banco `escriba`, que rode sozinho em intervalo
    fixo e guarde mais de uma geração, com regra para remover as antigas.
 2. Envie cada backup para um armazenamento fora do servidor da disciplina.
-3. Teste a restauração antes de quinta-feira, num banco ou tabela separada.
+3. Teste a restauração antes de quinta-feira, 19/11, às 8h, num banco ou tabela
+   separada.
 4. Depois do ataque, restaure a tabela `registros` com o conteúdo original.
 5. Registre tudo neste repositório.
 
