@@ -7,7 +7,7 @@ organização para ler.
 
 | | |
 |---|---|
-| **[🗄️ Atividade 12: backup do banco de dados](./ATIVIDADE-12-BACKUP.md)** | backup automático, cópia fora do servidor e restauração depois de um sequestro de dados. Prazo: 20/11 às 20h |
+| **[🗄️ Atividade 12: backup do banco de dados](./ATIVIDADE-12-BACKUP.md)** | backup automático, cópia fora do servidor e restauração depois de um sequestro de dados. Prazo: 23/11 às 20h |
 | **[💾 Backup de banco de dados](./BACKUP.md)** | texto de apoio: pg_dump, retenção, 3-2-1-1-0, WAL, ferramentas e provedores |
 | **[🗂️ Conteúdos trabalhados](./CONTEUDOS.md)** | tudo que a disciplina exercitou até aqui, por tópico: comandos, tecnologias e em que atividade cada um apareceu |
 | **[⚙️ Atividade 3: pipeline](./ATIVIDADE-3-PIPELINE.md)** | o GitHub Actions sobe a topologia da atividade 2 a cada push. Prazo: 26/09 às 20h |
